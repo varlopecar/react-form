@@ -34,6 +34,10 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
     runs-on: ubuntu-latest
