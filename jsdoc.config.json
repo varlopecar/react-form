@@ -8,6 +8,7 @@
     "excludePattern": "(node_modules/|dist/)"
   },
   "plugins": ["node_modules/jsdoc-tsimport-plugin"],
+  "parser": "typescript",
   "opts": {
     "destination": "./public/docs"
   }
