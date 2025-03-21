@@ -24,17 +24,14 @@ jobs:
           version: 9
       - name: pnpm install, build and test
         run: |
-          pnpm install --frozen-lockfile
-          pnpm run build
+          pnpm ci
           pnpm coverage
+          pnpm run doc
+          pnpm run build
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - name: Generate documentation
-        run: |
-          pnpm run doc
-          pnpm run doc:publish
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
