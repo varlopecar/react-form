@@ -7,9 +7,20 @@
     "includePattern": ".ts$",
     "excludePattern": "(node_modules/|dist/)"
   },
-  "plugins": ["node_modules/jsdoc-tsimport-plugin"],
-  "parser": "typescript",
   "opts": {
     "destination": "./public/docs"
+  },
+  "plugins": [
+    "node_modules/jsdoc-tsimport-plugin",
+    "node_modules/jsdoc-babel"
+  ],
+  "babel": {
+    "extensions": ["ts", "tsx"],
+    "presets": ["@babel/preset-typescript"]
+  },
+  "templates": {
+    "better-docs": {
+      "name": "Vitest Vite App"
+    }
   }
 }
