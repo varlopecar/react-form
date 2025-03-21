@@ -53,6 +53,6 @@ jobs:
         id: pages
         run: |
           pnpm run deploy
-          echo "url=https://https://varlopecar.github.io/vitest-vite-app/" >> $GITHUB_ENV
+          echo "url=//https://varlopecar.github.io/vitest-vite-app/" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
