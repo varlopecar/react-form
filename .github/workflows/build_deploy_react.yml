@@ -18,14 +18,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 9
       - name: pnpm install, build and test
         run: |
-          pnpm ci
-          pnpm coverage
+          pnpm install
+          pnpm run coverage
           pnpm run doc
           pnpm run build
       - name: Upload coverage reports to Codecov
