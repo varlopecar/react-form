@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "doc": "-R ./README.md -c ./jsdoc.config.json -r -d ./public/docs"
+    "doc": "jsdoc --readme ./README.md -c ./jsdoc.config.json -r -d ./public/docs"
   },
   "dependencies": {
     "react": "^19.0.0",

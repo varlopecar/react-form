@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "include": ["src"],
+    "includePattern": ".ts$"
+  },
+  "opts": {
+    "destination": "./public/docs"
+  }
+}
