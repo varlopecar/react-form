@@ -57,6 +57,9 @@ importers:
       jsdoc:
         specifier: ^4.0.4
         version: 4.0.4
+      jsdoc-tsimport-plugin:
+        specifier: ^1.0.5
+        version: 1.0.5
       jsdom:
         specifier: ^26.0.0
         version: 26.0.0
@@ -1217,6 +1220,9 @@ packages:
 
   js2xmlparser@4.0.2:
     resolution: {integrity: sha512-6n4D8gLlLf1n5mNLQPRfViYzu9RATblzPEtm1SthMX1Pjao0r9YI9nw7ZIfRxQMERS87mcswrg+r/OYrPRX6jA==}
+
+  jsdoc-tsimport-plugin@1.0.5:
+    resolution: {integrity: sha512-6mvyF+tXdanf3zxEumTF9Uf/sXGlANP+XohSuiJiOVVWPGxi+3f2a2sy5Ew3W+0PMYUkcGYNxfYd5mMZsIHQpg==}
 
   jsdoc@4.0.4:
     resolution: {integrity: sha512-zeFezwyXeG4syyYHbvh1A967IAqq/67yXtXvuL5wnqCkFZe8I0vKfm+EO+YEvLguo6w9CDUbrAXVtJSHh2E8rw==}
@@ -2884,6 +2890,8 @@ snapshots:
   js2xmlparser@4.0.2:
     dependencies:
       xmlcreate: 2.0.4
+
+  jsdoc-tsimport-plugin@1.0.5: {}
 
   jsdoc@4.0.4:
     dependencies:

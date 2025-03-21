@@ -18,7 +18,6 @@ export function calculateAge(p: { birthDate: Date }): number {
     throw new Error("Birth date must be a Date object");
   }
   if (isNaN(p.birthDate.getTime())) {
-    // This detects invalid dates like "2024-02-30"
     throw new Error("Birth date is not correct");
   }
   if (p.birthDate > new Date()) {
