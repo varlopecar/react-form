@@ -6,6 +6,6 @@ export default defineConfig({
   base: '/vitest-vite-app/',
   plugins: [react()],
   build: {
-    outDir: 'docs'
+    outDir: 'dist'
   }
 })
