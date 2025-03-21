@@ -1,17 +1,12 @@
-import { useState } from "react";
-import viteLogo from "/vite.svg";
-import reactLogo from "./assets/react.svg";
+import { Toaster } from "react-hot-toast";
+import { RegistrationForm } from "./components/RegistrationForm";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <div>
-      <img src={viteLogo} alt="Vite logo"/>
-      <img src={reactLogo} alt="React logo"/>
-      <button onClick={() => setCount((c) => c + 1)}>Click me</button>
-      <span data-testid="count">{count}</span>
+      <Toaster position="top-right" />
+      <RegistrationForm onSubmit={console.log} />
     </div>
   );
 }
