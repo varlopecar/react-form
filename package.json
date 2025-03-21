@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "doc": "-R ./README.md -c ./jsdoc.config.json -r -d ./public/docs"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -31,6 +32,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "gh-pages": "^6.3.0",
     "globals": "^15.15.0",
+    "jsdoc": "^4.0.4",
     "jsdom": "^26.0.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
