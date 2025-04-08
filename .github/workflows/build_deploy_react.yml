@@ -9,11 +9,15 @@ on:
 jobs:
   buld_test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         node-version: [20.x]
     steps:
       - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
@@ -51,7 +55,7 @@ jobs:
           git commit -m "chore: bump version [skip ci]"
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
           pnpm publish --no-git-checks --access public
-          git push
+          git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
