@@ -51,6 +51,7 @@ jobs:
           git commit -m "chore: bump version [skip ci]"
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
           pnpm publish --no-git-checks --access public
+          git push
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
