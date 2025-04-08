@@ -1,6 +1,6 @@
 import { expect, afterEach } from "vitest";
 import "@testing-library/jest-dom";
-import matchers from "@testing-library/jest-dom/matchers";
+import * as matchers from "@testing-library/jest-dom/matchers";
 import { cleanup } from "@testing-library/react";
 
 // @ts-expect-error: TypeScript does not recognize the global expect, but it is set up for testing
