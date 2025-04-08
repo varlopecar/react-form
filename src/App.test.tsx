@@ -1,20 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import App from "./App";
 
+// Mock the RegistrationForm component
+vi.mock("./components/RegistrationForm", () => ({
+  RegistrationForm: () => <div data-testid="registration-form">Registration Form</div>,
+}));
+
 describe("App Component", () => {
-  it("should increment the counter on button click", () => {
+  it("should render the registration form", () => {
     render(<App />);
 
-    const button = screen.getByRole("button", { name: /click me/i });
-    const counter = screen.getByTestId("count");
-
-    expect(button).toBeInTheDocument();
-    expect(counter).toBeInTheDocument();
-    expect(counter).toHaveTextContent("0");
-
-    fireEvent.click(button);
-    expect(counter).toHaveTextContent("1");
+    const registrationForm = screen.getByTestId("registration-form");
+    expect(registrationForm).toBeInTheDocument();
   });
 });

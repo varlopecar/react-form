@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-// Helper function to check if date is at least 18 years ago
+/**
+ * Helper function to check if a date is at least 18 years ago
+ *
+ * @param {Date} date - The date to check
+ * @returns {boolean} True if the date is at least 18 years ago, false otherwise
+ */
 const isAtLeast18YearsAgo = (date: Date) => {
   const today = new Date();
   const eighteenYearsAgo = new Date(
@@ -11,12 +16,27 @@ const isAtLeast18YearsAgo = (date: Date) => {
   return date <= eighteenYearsAgo;
 };
 
-// French name regex (allows accents, hyphens, spaces)
+/**
+ * French name regex (allows accents, hyphens, spaces)
+ */
 const nameRegex = /^[a-zA-ZÀ-ÿ\-\s']+$/;
 
-// French postal code regex
+/**
+ * French postal code regex (5 digits)
+ */
 const postalCodeRegex = /^[0-9]{5}$/;
 
+/**
+ * Zod schema for user registration form validation
+ *
+ * @type {z.ZodObject}
+ * @property {z.ZodString} firstName - User's first name (min 2 chars, French name format)
+ * @property {z.ZodString} lastName - User's last name (min 2 chars, French name format)
+ * @property {z.ZodString} email - User's email address
+ * @property {z.ZodDate} birthDate - User's birth date (must be at least 18 years ago)
+ * @property {z.ZodString} city - User's city (min 2 chars, French name format)
+ * @property {z.ZodString} postalCode - User's postal code (5 digits)
+ */
 export const registrationSchema = z.object({
   firstName: z
     .string()
@@ -39,4 +59,15 @@ export const registrationSchema = z.object({
     .regex(postalCodeRegex, "Le code postal doit contenir 5 chiffres"),
 });
 
+/**
+ * Type definition for the registration form data
+ *
+ * @typedef {Object} RegistrationFormData
+ * @property {string} firstName - User's first name
+ * @property {string} lastName - User's last name
+ * @property {string} email - User's email address
+ * @property {Date} birthDate - User's birth date
+ * @property {string} city - User's city
+ * @property {string} postalCode - User's postal code
+ */
 export type RegistrationFormData = z.infer<typeof registrationSchema>;

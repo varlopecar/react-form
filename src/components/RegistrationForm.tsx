@@ -3,10 +3,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import { registrationSchema, type RegistrationFormData } from "../schemas/registrationSchema";
 
+/**
+ * Props for the RegistrationForm component
+ * @interface Props
+ * @property {Function} onSubmit - Callback function that receives the form data when the form is submitted
+ */
 interface Props {
     onSubmit: (data: RegistrationFormData) => void;
 }
 
+/**
+ * A form component for user registration
+ * 
+ * @component
+ * @param {Props} props - The component props
+ * @param {Function} props.onSubmit - Callback function that receives the form data when the form is submitted
+ * @returns {JSX.Element} The rendered form component
+ * 
+ * @example
+ * ```tsx
+ * <RegistrationForm onSubmit={(data) => console.log(data)} />
+ * ```
+ */
 export const RegistrationForm = ({ onSubmit }: Props) => {
     const {
         register,
@@ -17,6 +35,11 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
         resolver: zodResolver(registrationSchema),
     });
 
+    /**
+     * Handles the form submission
+     * 
+     * @param {RegistrationFormData} data - The form data
+     */
     const onSubmitHandler = (data: RegistrationFormData) => {
         onSubmit(data);
         toast.success("Inscription réussie !");
