@@ -45,25 +45,18 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - name: Authenticate to NPM
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > ~/.npmrc
       - name: Build and publish package on NPM
         run: |
           git config --global user.email "varlopecar@gmail.com"
           git config --global user.name "Carlos Vargas"
-          pnpm run build-npm-ci
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          if npm view @varlopecar/ci-cd versions --json | grep -q "\"$CURRENT_VERSION\""; then
-            echo "Version $CURRENT_VERSION already exists, skipping publish"
-            exit 0
-          fi
-          pnpm version patch --no-git-tag-version
-          git add package.json pnpm-lock.yaml
-          git commit -m "chore: bump version [skip ci]"
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
-          pnpm publish --no-git-checks --access public
-          git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          npm run build-npm-ci
+          npm version patch
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
   deploy:
     runs-on: ubuntu-latest
     needs: buld_test
