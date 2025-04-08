@@ -27,8 +27,18 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9
-      - name: Ensure pnpm is in PATH
-        run: echo "$(pnpm root -g)/bin" >> $GITHUB_PATH
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
       - name: Run tests and build
@@ -61,8 +71,18 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9
-      - name: Ensure pnpm is in PATH
-        run: echo "$(pnpm root -g)/bin" >> $GITHUB_PATH
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
       - name: Build
@@ -96,8 +116,18 @@ jobs:
         uses: pnpm/action-setup@v3
         with:
           version: 9
-      - name: Ensure pnpm is in PATH
-        run: echo "$(pnpm root -g)/bin" >> $GITHUB_PATH
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
       - name: Authenticate to NPM
