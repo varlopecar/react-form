@@ -53,6 +53,11 @@ jobs:
           git config --global user.email "varlopecar@gmail.com"
           git config --global user.name "Carlos Vargas"
           pnpm run build-npm-ci
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if pnpm view @varlopecar/ci-cd versions --json | grep -q "\"$CURRENT_VERSION\""; then
+            echo "Version $CURRENT_VERSION already exists, skipping publish"
+            exit 0
+          fi
           pnpm version patch --no-git-tag-version
           git add package.json pnpm-lock.yaml
           git commit -m "chore: bump version [skip ci]"
