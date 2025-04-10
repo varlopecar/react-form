@@ -15,4 +15,20 @@ describe("App Component", () => {
     const registrationForm = screen.getByTestId("registration-form");
     expect(registrationForm).toBeInTheDocument();
   });
+
+  it("should render the documentation link with correct path", () => {
+    render(<App />);
+
+    const documentationLink = screen.getByText("Documentation");
+    expect(documentationLink).toBeInTheDocument();
+    expect(documentationLink).toHaveAttribute("href", "/vitest-vite-app/docs/index.html");
+    expect(documentationLink).toHaveAttribute("target", "_blank");
+  });
+
+  it("should render the header and footer", () => {
+    render(<App />);
+
+    expect(screen.getByText("Formulaire d'inscription")).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeInTheDocument();
+  });
 });

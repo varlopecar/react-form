@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
+import { useState, useEffect } from "react";
 import { registrationSchema, type RegistrationFormData } from "../schemas/registrationSchema";
 
 /**
@@ -26,14 +27,34 @@ interface Props {
  * ```
  */
 export const RegistrationForm = ({ onSubmit }: Props) => {
+    const [isFormComplete, setIsFormComplete] = useState(false);
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
+        watch,
     } = useForm<RegistrationFormData>({
         resolver: zodResolver(registrationSchema),
+        mode: "onChange",
     });
+
+    // Watch all form fields to check if they're filled
+    const formValues = watch();
+
+    // Check if all fields have values
+    useEffect(() => {
+        const allFieldsFilled =
+            !!formValues.firstName?.trim() &&
+            !!formValues.lastName?.trim() &&
+            !!formValues.email?.trim() &&
+            !!formValues.birthDate &&
+            !!formValues.city?.trim() &&
+            !!formValues.postalCode?.trim();
+
+        setIsFormComplete(allFieldsFilled);
+    }, [formValues]);
 
     /**
      * Handles the form submission
@@ -41,13 +62,34 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
      * @param {RegistrationFormData} data - The form data
      */
     const onSubmitHandler = (data: RegistrationFormData) => {
-        onSubmit(data);
-        toast.success("Inscription réussie !");
-        reset();
+        try {
+            // Call the onSubmit callback
+            onSubmit(data);
+
+            // Save data to localStorage
+            localStorage.setItem('userRegistration', JSON.stringify(data));
+
+            // Show success toast
+            toast.success("Inscription réussie !");
+
+            // Reset the form
+            reset();
+        } catch (error) {
+            // Show error toast if something goes wrong
+            toast.error("Une erreur est survenue lors de l'inscription");
+            console.error("Registration error:", error);
+        }
+    };
+
+    /**
+     * Handles form validation errors
+     */
+    const onError = () => {
+        toast.error("Veuillez corriger les erreurs dans le formulaire");
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-6 max-w-lg mx-auto p-8 bg-white rounded-2xl shadow-lg">
+        <form onSubmit={handleSubmit(onSubmitHandler, onError)} role="form" className="space-y-6 max-w-lg mx-auto p-8 bg-white rounded-2xl shadow-lg">
             <div>
                 <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700">
                     Prénom
@@ -136,7 +178,11 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
 
             <button
                 type="submit"
-                className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition duration-300"
+                disabled={!isFormComplete}
+                className={`w-full py-3 px-6 rounded-lg transition duration-300 ${isFormComplete
+                    ? "bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
             >
                 S'inscrire
             </button>

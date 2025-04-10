@@ -1,17 +1,36 @@
-# CI/CD React Components
+# Registration Form Project
 
-A collection of React components for building user registration forms with validation.
+[![Build and Test React App](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml)
+[![codecov](https://codecov.io/gh/varlopecar/vitest-vite-app/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/varlopecar/vitest-vite-app)
+[![npm version](https://badge.fury.io/js/@varlopecar%2Fci-cd.svg)](https://badge.fury.io/js/@varlopecar%2Fci-cd)
+
+A comprehensive user registration form with robust validation, built with React, TypeScript, and modern frontend practices.
 
 ## Features
 
-- **RegistrationForm**: A fully featured registration form with validation
-- **Zod Schema Validation**: Built-in validation using Zod
-- **React Hook Form Integration**: Form state management with react-hook-form
-- **TypeScript Support**: Full TypeScript support with type definitions
-- **Tailwind CSS Styling**: Modern, responsive design with Tailwind CSS
-- **Automated Testing**: Comprehensive test suite with Vitest
+- **Form Validation**: Complete form validation with Zod schemas
+- **User Experience**:
+  - Disabled submit button until all fields are filled
+  - Error messages displayed under each invalid field
+  - Toast notifications for success and failure
+  - Local storage saving of user data
+- **Validation Rules**:
+  - Age verification (18+ years)
+  - French postal code format
+  - Name validation (allowing accents, hyphens, spaces)
+  - Email validation
+- **Testing**: 100% code coverage with unit and integration tests
 - **Documentation**: Auto-generated documentation with JSDoc
 - **CI/CD Pipeline**: Automated build, test, and deployment process
+
+## Live Demo
+
+Visit the live demo at: [https://varlopecar.github.io/vitest-vite-app/](https://varlopecar.github.io/vitest-vite-app/)
+
+## Documentation
+
+The documentation is available directly from the application by clicking the "Documentation" link, or you can access it at:
+[https://varlopecar.github.io/vitest-vite-app/docs/](https://varlopecar.github.io/vitest-vite-app/docs/)
 
 ## Installation
 
@@ -66,6 +85,19 @@ const validateForm = (data) => {
 };
 ```
 
+## Form Behavior
+
+1. **Field Validation**: All fields are validated in real-time
+2. **Submit Button**: Disabled until all fields have values
+3. **Success Case**:
+   - Data is saved to localStorage
+   - A success toast notification is displayed
+   - Form fields are cleared
+4. **Error Case**:
+   - Error messages displayed under each invalid field
+   - Error toast notification
+   - Form remains filled for user correction
+
 ## API Reference
 
 ### RegistrationForm
@@ -95,13 +127,18 @@ interface RegistrationFormData {
 
 ### registrationSchema
 
-Zod schema for validating registration form data.
+Zod schema for validating registration form data with rules for:
+
+- Names (allowing letters, accents, hyphens)
+- Email format
+- Age verification (18+ years)
+- French postal code format (5 digits)
 
 ## Development
 
 ```bash
 # Clone the repository
-git clone https://github.com/varlopecar/vite-vitest-app.git
+git clone https://github.com/varlopecar/vitest-vite-app.git
 
 # Install dependencies
 pnpm install
@@ -121,6 +158,28 @@ pnpm doc
 # Build for production
 pnpm build
 ```
+
+## Test Coverage
+
+This project maintains 100% test coverage across all metrics:
+
+- 100% Statement Coverage
+- 100% Branch Coverage
+- 100% Function Coverage
+- 100% Line Coverage
+
+Tests include:
+
+- Age calculation validation
+- Age 18+ validation
+- French postal code format validation
+- Name format validation with special cases
+- Email format validation
+- Button state based on form completion
+- Local storage functionality
+- Toast notifications
+- Error message display
+- Error handling
 
 ## CI/CD Pipeline
 

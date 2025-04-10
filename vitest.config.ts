@@ -11,7 +11,6 @@ export default defineConfig({
 
         // Configuration files
         "vite.config.ts",
-        "vite.config.js",
         "vite.config.d.ts",
         "vitest.config.ts",
         "eslint.config.js",
