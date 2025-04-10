@@ -1,4 +1,4 @@
-name: Build and Test React App
+name: NPM Package Build and Publish
 on:
   push:
     branches:
@@ -8,25 +8,20 @@ on:
       - main
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  build_test:
+  build_test_publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v3
@@ -42,17 +37,6 @@ jobs:
       - name: Run tests with coverage
         run: pnpm run coverage
 
-      - name: Generate documentation
-        run: pnpm run doc
-
-      - name: Copy docs to dist
-        run: mkdir -p dist && cp -r public/docs dist/docs
-
-      - name: Build
-        run: pnpm run build
-        env:
-          BUILD_MODE: web
-
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -66,59 +50,14 @@ jobs:
           name: coverage-report
           path: coverage/
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy_github_pages:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build_test
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-  deploy_npm:
-    runs-on: ubuntu-latest
-    needs: build_test
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - name: Build package
+        run: pnpm run build
+        env:
+          NODE_ENV: production
 
       - name: Authenticate to NPM
         run: |
           echo "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}" > ~/.npmrc
-
-      - name: Ensure pnpm is in PATH
-        run: echo "$(pnpm root -g)/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build for NPM
-        run: pnpm run build-lib
-        env:
-          BUILD_MODE: lib
 
       - name: Configure Git
         run: |
