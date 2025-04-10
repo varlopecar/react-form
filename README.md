@@ -1,7 +1,7 @@
 # Registration Form Project
 
 [![Build and Test React App](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml)
-[![codecov](https://codecov.io/gh/varlopecar/vitest-vite-app/branch/main/graph/badge.svg?token=YOUR_CODECOV_TOKEN)](https://codecov.io/gh/varlopecar/vitest-vite-app)
+[![codecov](https://codecov.io/gh/varlopecar/vitest-vite-app/branch/main/graph/badge.svg)](https://app.codecov.io/gh/varlopecar/vitest-vite-app)
 [![npm version](https://badge.fury.io/js/@varlopecar%2Fci-cd.svg)](https://badge.fury.io/js/@varlopecar%2Fci-cd)
 
 A comprehensive user registration form with robust validation, built with React, TypeScript, and modern frontend practices.
@@ -180,6 +180,8 @@ Tests include:
 - Toast notifications
 - Error message display
 - Error handling
+
+View detailed coverage report: [Codecov Dashboard](https://app.codecov.io/gh/varlopecar/vitest-vite-app)
 
 ## CI/CD Pipeline
 
