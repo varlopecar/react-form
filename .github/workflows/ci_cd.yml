@@ -67,6 +67,6 @@ jobs:
       - name: Bump version and publish
         run: |
           pnpm version patch --no-git-tag-version
-          pnpm publish --no-git-checks
+          pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
