@@ -1,7 +1,7 @@
 # Registration Form Project
 
-[![Build and Test React App](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/varlopecar/vitest-vite-app/actions/workflows/ci_cd.yml)
-[![codecov](https://codecov.io/gh/varlopecar/vitest-vite-app/branch/main/graph/badge.svg)](https://app.codecov.io/gh/varlopecar/vitest-vite-app)
+[![Build and Test React App](https://github.com/varlopecar/react-form/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/varlopecar/react-form/actions/workflows/ci_cd.yml)
+[![codecov](https://codecov.io/gh/varlopecar/react-form/branch/main/graph/badge.svg)](https://app.codecov.io/gh/varlopecar/react-form)
 [![npm version](https://badge.fury.io/js/@varlopecar%2Fci-cd.svg)](https://badge.fury.io/js/@varlopecar%2Fci-cd)
 
 A comprehensive user registration form with robust validation, built with React, TypeScript, and modern frontend practices.
@@ -25,12 +25,12 @@ A comprehensive user registration form with robust validation, built with React,
 
 ## Live Demo
 
-Visit the live demo at: [https://varlopecar.github.io/vitest-vite-app/](https://varlopecar.github.io/vitest-vite-app/)
+Visit the live demo at: [https://varlopecar.github.io/react-form/](https://varlopecar.github.io/react-form/)
 
 ## Documentation
 
 The documentation is available directly from the application by clicking the "Documentation" link, or you can access it at:
-[https://varlopecar.github.io/vitest-vite-app/docs/](https://varlopecar.github.io/vitest-vite-app/docs/)
+[https://varlopecar.github.io/react-form/docs/](https://varlopecar.github.io/react-form/docs/)
 
 ## Installation
 
@@ -138,7 +138,7 @@ Zod schema for validating registration form data with rules for:
 
 ```bash
 # Clone the repository
-git clone https://github.com/varlopecar/vitest-vite-app.git
+git clone https://github.com/varlopecar/react-form.git
 
 # Install dependencies
 pnpm install
@@ -181,7 +181,7 @@ Tests include:
 - Error message display
 - Error handling
 
-View detailed coverage report: [Codecov Dashboard](https://app.codecov.io/gh/varlopecar/vitest-vite-app)
+View detailed coverage report: [Codecov Dashboard](https://app.codecov.io/gh/varlopecar/react-form)
 
 ## CI/CD Pipeline
 

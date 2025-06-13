@@ -21,7 +21,7 @@ describe("App Component", () => {
 
     const documentationLink = screen.getByText("Documentation");
     expect(documentationLink).toBeInTheDocument();
-    expect(documentationLink).toHaveAttribute("href", "/vitest-vite-app/docs/index.html");
+    expect(documentationLink).toHaveAttribute("href", "/react-form/docs/index.html");
     expect(documentationLink).toHaveAttribute("target", "_blank");
   });
 

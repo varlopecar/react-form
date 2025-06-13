@@ -13,7 +13,7 @@ const isLib = process.env.BUILD_MODE === "lib";
 // https://vite.dev/config/
 export default defineConfig({
   // Only use the base path for the web app, not for the library
-  base: isLib ? "/" : "/vitest-vite-app/",
+  base: isLib ? "/" : "/react-form/",
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
   build: {
     outDir: "dist",

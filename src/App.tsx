@@ -17,7 +17,7 @@ function App() {
   // Create docs path - hardcoded for clarity and testability
   // NOTE: In a real app with dynamic environments, you might want to use:
   // const docsPath = `${import.meta.env.BASE_URL || '/'}docs/index.html`.replace(/\/\//g, '/');
-  const docsPath = "/vitest-vite-app/docs/index.html";
+  const docsPath = "/react-form/docs/index.html";
 
   return (
     <div className="container mx-auto px-4 py-8">
