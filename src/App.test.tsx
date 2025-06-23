@@ -28,7 +28,7 @@ describe("App Component", () => {
   it("should render the header and footer", () => {
     render(<App />);
 
-    expect(screen.getByText("Formulaire d'inscription")).toBeInTheDocument();
+    expect(screen.getByText("Formulaire d'Inscription")).toBeInTheDocument();
     expect(screen.getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeInTheDocument();
   });
 });

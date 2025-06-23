@@ -81,6 +81,7 @@ class ApiService {
   async getUsers(token: string): Promise<User[]> {
     return this.request<User[]>("/users", {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -93,6 +94,7 @@ class ApiService {
     return this.request<{ message: string }>(`/users/${userId}`, {
       method: "DELETE",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
@@ -101,6 +103,7 @@ class ApiService {
   async getCurrentUser(token: string): Promise<User> {
     return this.request<User>("/me", {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });

@@ -102,8 +102,21 @@ function App() {
                 >
                   Connexion Admin
                 </button>
+                <div className="mt-4">
+                  <a
+                    href="/react-form/docs/index.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    Documentation
+                  </a>
+                </div>
               </div>
             </div>
+            <footer className="text-center py-4 text-gray-600">
+              © {new Date().getFullYear()} React Form - CI/CD Project
+            </footer>
           </div>
         );
 
