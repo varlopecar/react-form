@@ -1,0 +1,59 @@
+{
+  "loginSuccess": {
+    "access_token": "admin@example.com",
+    "token_type": "bearer"
+  },
+  "loginFailure": {
+    "detail": "Incorrect email or password"
+  },
+  "registrationSuccess": {
+    "id": 1,
+    "email": "test@example.com",
+    "first_name": "Test",
+    "last_name": "User",
+    "birth_date": "1990-01-01",
+    "city": "Paris",
+    "postal_code": "75001",
+    "is_admin": false,
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "registrationFailure": {
+    "detail": "Email already registered"
+  },
+  "usersList": [
+    {
+      "id": 1,
+      "email": "admin@example.com",
+      "first_name": "Admin",
+      "last_name": "User",
+      "birth_date": "1990-01-01",
+      "city": "Paris",
+      "postal_code": "75001",
+      "is_admin": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "email": "user@example.com",
+      "first_name": "Regular",
+      "last_name": "User",
+      "birth_date": "1995-05-15",
+      "city": "Lyon",
+      "postal_code": "69001",
+      "is_admin": false,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "deleteSuccess": {
+    "message": "User deleted successfully"
+  },
+  "unauthorized": {
+    "detail": "Not authenticated"
+  },
+  "forbidden": {
+    "detail": "Not authorized"
+  }
+}

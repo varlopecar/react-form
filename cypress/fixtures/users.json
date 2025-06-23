@@ -1,0 +1,56 @@
+{
+  "admin": {
+    "email": "admin@example.com",
+    "password": "admin123",
+    "firstName": "Admin",
+    "lastName": "User",
+    "birthDate": "1990-01-01",
+    "city": "Paris",
+    "postalCode": "75001"
+  },
+  "regularUser": {
+    "email": "user@example.com",
+    "password": "user123",
+    "firstName": "Regular",
+    "lastName": "User",
+    "birthDate": "1995-05-15",
+    "city": "Lyon",
+    "postalCode": "69001"
+  },
+  "testUser1": {
+    "email": "jean.dupont@example.com",
+    "password": "password123",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "birthDate": "1990-05-15",
+    "city": "Paris",
+    "postalCode": "75001"
+  },
+  "testUser2": {
+    "email": "marie.martin@example.com",
+    "password": "password123",
+    "firstName": "Marie",
+    "lastName": "Martin",
+    "birthDate": "1985-10-20",
+    "city": "Lyon",
+    "postalCode": "69001"
+  },
+  "testUser3": {
+    "email": "pierre.durand@example.com",
+    "password": "password123",
+    "firstName": "Pierre",
+    "lastName": "Durand",
+    "birthDate": "1988-03-12",
+    "city": "Marseille",
+    "postalCode": "13001"
+  },
+  "invalidUser": {
+    "email": "invalid-email",
+    "password": "short",
+    "firstName": "A",
+    "lastName": "B",
+    "birthDate": "2025-01-01",
+    "city": "X",
+    "postalCode": "123"
+  }
+}

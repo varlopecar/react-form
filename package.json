@@ -17,10 +17,18 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
+    "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "doc": "jsdoc --readme ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
     "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "e2e": "cypress run",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -45,6 +53,7 @@
     "@vitest/coverage-c8": "^0.33.0",
     "@vitest/coverage-v8": "^3.1.1",
     "better-docs": "^2.7.3",
+    "cypress": "^13.6.0",
     "eslint": "^9.24.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
