@@ -84,7 +84,12 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 
 @app.get("/")
 def read_root():
-    return {"message": "React Form API"}
+    return {"message": "React Form API - Updated for deployment test!", "version": "1.0.1", "status": "running"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "message": "Backend is running successfully!"}
 
 
 @app.post("/register", response_model=UserResponse)
