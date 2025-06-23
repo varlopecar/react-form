@@ -1,2 +1,4 @@
-ignoredBuiltDependencies:
-  - cypress
+packages:
+  - "src"
+  - "backend"
+  - "cypress"
