@@ -17,6 +17,10 @@ export default defineConfig({
   // Only use the base path for the web app in production, not for the library or CI
   base: isLib || isCI ? "/" : "/react-form/",
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
+  server: {
+    port: 3000,
+    host: "0.0.0.0",
+  },
   build: {
     outDir: "dist",
     emptyOutDir: true,
