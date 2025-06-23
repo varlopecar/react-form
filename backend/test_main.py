@@ -95,7 +95,10 @@ class TestRoot:
     def test_read_root(self):
         response = client.get("/")
         assert response.status_code == 200
-        assert response.json() == {"message": "React Form API"}
+        data = response.json()
+        assert data["message"] == "React Form API - Updated for deployment test!"
+        assert data["status"] == "running"
+        assert data["version"] == "1.0.1"
 
 
 class TestUserRegistration:

@@ -9,11 +9,13 @@ const __dirname = dirname(__filename);
 
 // Check if we're building the library for NPM
 const isLib = process.env.BUILD_MODE === "lib";
+// Check if we're in CI environment
+const isCI = process.env.CI === "true";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Only use the base path for the web app, not for the library
-  base: isLib ? "/" : "/react-form/",
+  // Only use the base path for the web app in production, not for the library or CI
+  base: isLib || isCI ? "/" : "/react-form/",
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
   build: {
     outDir: "dist",

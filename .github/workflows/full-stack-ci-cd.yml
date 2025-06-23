@@ -161,14 +161,21 @@ jobs:
         run: |
           cd backend
           uvicorn main:app --host 0.0.0.0 --port 8000 &
-          sleep 10
+          echo "Backend starting..."
+          sleep 15
+          curl -f http://localhost:8000/ || exit 1
+          echo "Backend is running"
 
       - name: Start frontend
         env:
           VITE_API_URL: http://localhost:8000
+          CI: "true"
         run: |
           pnpm run dev -- --host 0.0.0.0 --port 3000 &
-          sleep 10
+          echo "Frontend starting..."
+          sleep 20
+          curl -f http://localhost:3000/ || exit 1
+          echo "Frontend is running"
 
       - name: Install Cypress
         run: npx cypress install
