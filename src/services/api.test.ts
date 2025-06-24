@@ -1,9 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { apiService } from "./api";
+import { ApiService } from "./api";
 import { RegistrationFormData } from "../schemas/registrationSchema";
 
 // Mock fetch globally
 global.fetch = vi.fn();
+
+// Create a test instance with a fixed base URL
+const apiService = new ApiService("http://localhost:8000");
 
 describe("ApiService", () => {
   beforeEach(() => {

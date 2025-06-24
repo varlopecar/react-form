@@ -35,11 +35,8 @@ const getApiBaseUrl = (): string => {
       ? "https://backend-omega-khaki.vercel.app"
       : "http://localhost:8000");
 
-  console.log("API Base URL:", apiUrl, `(Production: ${isProduction})`);
   return apiUrl;
 };
-
-const API_BASE_URL = getApiBaseUrl();
 
 export interface User {
   id: number;
@@ -64,11 +61,11 @@ export interface AuthResponse {
   token_type: string;
 }
 
-class ApiService {
+export class ApiService {
   private baseUrl: string;
 
-  constructor() {
-    this.baseUrl = API_BASE_URL;
+  constructor(baseUrl?: string) {
+    this.baseUrl = baseUrl || getApiBaseUrl();
   }
 
   private async request<T>(
