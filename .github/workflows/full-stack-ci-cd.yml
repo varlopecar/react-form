@@ -194,6 +194,7 @@ jobs:
         with:
           name: cypress-screenshots
           path: cypress/screenshots
+          if-no-files-found: ignore
 
       - name: Upload Cypress videos
         uses: actions/upload-artifact@v4
@@ -201,6 +202,7 @@ jobs:
         with:
           name: cypress-videos
           path: cypress/videos
+          if-no-files-found: ignore
 
   deploy-backend:
     needs: [test, e2e]
@@ -228,7 +230,7 @@ jobs:
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          CORS_ORIGINS: ${{ secrets.CORS_ORIGINS }}
+          CORS_ORIGINS: http://localhost:3000,http://localhost:5173,https://varlopecar.github.io
         run: |
           cd backend
           vercel --prod --token $VERCEL_TOKEN
@@ -257,9 +259,7 @@ jobs:
 
       - name: Build frontend
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://backend-fa3gmrrog-varlopecars-projects.vercel.app' }}
         run: pnpm run build
 
       - name: Deploy to GitHub Pages
