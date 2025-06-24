@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import { apiService, User } from "./services/api";
 import { RegistrationFormData } from "./schemas/registrationSchema";
 
@@ -22,6 +23,7 @@ function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if user is already logged in
@@ -31,6 +33,21 @@ function App() {
       loadCurrentUser(token);
     }
   }, []);
+
+  useEffect(() => {
+    // Handle redirects from 404.html
+    const urlParams = new URLSearchParams(location.search);
+    const redirectPath = urlParams.get('redirect');
+
+    if (redirectPath) {
+      // Remove the redirect parameter from the URL
+      const newSearch = urlParams.toString().replace(/redirect=[^&]*&?/, '').replace(/&$/, '');
+      const newUrl = location.pathname + (newSearch ? '?' + newSearch : '') + location.hash;
+
+      // Navigate to the original path
+      navigate(redirectPath, { replace: true });
+    }
+  }, [location, navigate]);
 
   const loadCurrentUser = async (token: string) => {
     try {
@@ -83,6 +100,7 @@ function App() {
     <>
       <Toaster position="top-right" />
       <Routes>
+        <Route path="/" element={<Navigate to="/register" replace />} />
         <Route path="/register" element={<RegisterPage onSubmit={handleRegistration} />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route
@@ -95,7 +113,7 @@ function App() {
             )
           }
         />
-        <Route path="*" element={<Navigate to="/register" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
   );

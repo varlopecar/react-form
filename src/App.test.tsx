@@ -32,6 +32,22 @@ vi.mock("./services/api", () => ({
   },
 }));
 
+// Mock react-hot-toast
+vi.mock('react-hot-toast', () => ({
+  Toaster: () => <div data-testid="toaster" />,
+}));
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+};
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+});
+
 const theme = createTheme();
 
 const renderWithRouter = (component: React.ReactElement) => {
@@ -45,6 +61,11 @@ const renderWithRouter = (component: React.ReactElement) => {
 };
 
 describe("App Component", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorageMock.getItem.mockReturnValue(null);
+  });
+
   it("should render the registration page by default", () => {
     renderWithRouter(<App />);
 
@@ -62,8 +83,29 @@ describe("App Component", () => {
 
   it("should render without crashing", () => {
     renderWithRouter(<App />);
-    
+
     // Just check that something renders without errors
     expect(document.body).toBeInTheDocument();
+  });
+
+  test('redirects to register when accessing root path', () => {
+    window.history.pushState({}, '', '/');
+    renderWithRouter(<App />);
+    expect(screen.getByText(/register/i)).toBeInTheDocument();
+  });
+
+  test('shows 404 page for unknown routes', () => {
+    window.history.pushState({}, '', '/unknown-route');
+    renderWithRouter(<App />);
+    expect(screen.getByText('404')).toBeInTheDocument();
+    expect(screen.getByText('Page Not Found')).toBeInTheDocument();
+  });
+
+  test('handles redirect parameter from 404.html', () => {
+    // Simulate the redirect parameter that would be set by 404.html
+    window.history.pushState({}, '', '/?redirect=%2Fdashboard');
+    renderWithRouter(<App />);
+    // Should redirect to dashboard, but since no auth token, should redirect to login
+    expect(screen.getByText(/login/i)).toBeInTheDocument();
   });
 });

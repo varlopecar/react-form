@@ -9,8 +9,6 @@ const __dirname = dirname(__filename);
 
 // Check if we're building the library for NPM
 const isLib = process.env.BUILD_MODE === "lib";
-// Check if we're in CI environment
-const isCI = process.env.CI === "true";
 // Check if we're in Docker environment
 const isDocker = process.env.DOCKER_ENV === "true";
 // Check if we're in development
@@ -21,7 +19,7 @@ const isWebBuild = process.env.BUILD_MODE === "web";
 // https://vite.dev/config/
 export default defineConfig({
   // Only use the base path for GitHub Pages deployment
-  base: isLib || isDocker || isDev ? "/" : (isWebBuild ? "/react-form/" : "/"),
+  base: isLib || isDocker || isDev ? "/" : isWebBuild ? "/react-form/" : "/",
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
   server: {
     port: 3000,

@@ -18,6 +18,12 @@ if not DATABASE_URL:
     
     # Construct database URL
     DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:3306/{MYSQL_DATABASE}"
+else:
+    # Ensure the database URL uses pymysql driver
+    if DATABASE_URL.startswith("mysql://"):
+        DATABASE_URL = DATABASE_URL.replace("mysql://", "mysql+pymysql://", 1)
+
+print(f"Using database URL: {DATABASE_URL[:50]}...")
 
 
 def create_engine_with_retry():

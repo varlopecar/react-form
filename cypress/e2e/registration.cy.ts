@@ -50,6 +50,11 @@ describe("User Registration", () => {
   });
 
   it("should validate email format", () => {
+    cy.get("#email").type("invalid-email");
+    cy.get("#email").blur();
+    cy.contains("L'email n'est pas valide").should("be.visible");
+  });
+
   it("should register a new user successfully", () => {
     const userData = {
       firstName: "Jean",
