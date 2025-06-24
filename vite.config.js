@@ -31,8 +31,13 @@ var htmlTemplatePlugin = function () {
         transformIndexHtml: {
             order: "pre",
             handler: function (html) {
-                var apiUrl = process.env.VITE_API_URL || "http://localhost:8000";
-                console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl);
+                var isDevelopment = process.env.NODE_ENV === "development" ||
+                    process.env.NODE_ENV === undefined;
+                var defaultApiUrl = isDevelopment
+                    ? "http://localhost:8000"
+                    : "https://backend-omega-khaki.vercel.app/";
+                var apiUrl = process.env.VITE_API_URL || defaultApiUrl;
+                console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl, "(".concat(isDevelopment ? "development" : "production", ")"));
                 return html.replace(/%VITE_API_URL%/g, apiUrl);
             },
         },

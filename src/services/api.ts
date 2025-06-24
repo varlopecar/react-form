@@ -22,10 +22,20 @@ const getApiBaseUrl = (): string => {
     .querySelector('meta[name="api-url"]')
     ?.getAttribute("content");
 
-  // Use the first available URL, with fallback
-  const apiUrl = runtimeUrl || metaUrl || envUrl || "http://localhost:8000";
+  // Determine if we're in production
+  const isProduction =
+    import.meta.env.PROD || window.location.hostname !== "localhost";
 
-  console.log("API Base URL:", apiUrl);
+  // Use the first available URL, with production fallback
+  const apiUrl =
+    runtimeUrl ||
+    metaUrl ||
+    envUrl ||
+    (isProduction
+      ? "https://backend-omega-khaki.vercel.app/"
+      : "http://localhost:8000");
+
+  console.log("API Base URL:", apiUrl, `(Production: ${isProduction})`);
   return apiUrl;
 };
 

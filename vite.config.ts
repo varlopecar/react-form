@@ -23,8 +23,18 @@ const htmlTemplatePlugin = () => {
     transformIndexHtml: {
       order: "pre" as const,
       handler(html: string) {
-        const apiUrl = process.env.VITE_API_URL || "http://localhost:8000";
-        console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl);
+        const isDevelopment =
+          process.env.NODE_ENV === "development" ||
+          process.env.NODE_ENV === undefined;
+        const defaultApiUrl = isDevelopment
+          ? "http://localhost:8000"
+          : "https://backend-omega-khaki.vercel.app/";
+        const apiUrl = process.env.VITE_API_URL || defaultApiUrl;
+        console.log(
+          "🔧 Replacing VITE_API_URL in HTML template:",
+          apiUrl,
+          `(${isDevelopment ? "development" : "production"})`
+        );
         return html.replace(/%VITE_API_URL%/g, apiUrl);
       },
     },
