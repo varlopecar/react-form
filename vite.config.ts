@@ -11,11 +11,15 @@ const __dirname = dirname(__filename);
 const isLib = process.env.BUILD_MODE === "lib";
 // Check if we're in CI environment
 const isCI = process.env.CI === "true";
+// Check if we're in Docker environment
+const isDocker = process.env.DOCKER_ENV === "true";
+// Check if we're in development
+const isDev = process.env.NODE_ENV === "development";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Only use the base path for the web app in production, not for the library or CI
-  base: isLib || isCI ? "/" : "/react-form/",
+  // Only use the base path for the web app in production and not in Docker/CI/Dev
+  base: isLib || isCI || isDocker || isDev ? "/" : "/react-form/",
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
   server: {
     port: 3000,

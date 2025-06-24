@@ -1,23 +1,30 @@
-version: '3.8'
+x-common-variables: &common-variables
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  MYSQL_HOST: ${MYSQL_HOST}
 
 services:
   # MySQL Database
   mysql:
-    image: mysql:8.0
+    image: mysql:8.2
     container_name: react-form-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-react_form_db}
-      MYSQL_USER: ${MYSQL_USER:-react_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-react_password}
+      <<: *common-variables
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - react-form-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 10s
+      start_period: 30s
 
   # Adminer for database management
   adminer:
@@ -26,10 +33,9 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    environment:
-      ADMINER_DEFAULT_SERVER: mysql
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - react-form-network
 
@@ -43,13 +49,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql+pymysql://${MYSQL_USER:-react_user}:${MYSQL_PASSWORD:-react_password}@mysql:3306/${MYSQL_DATABASE:-react_form_db}
-      - SECRET_KEY=${SECRET_KEY:-your-secret-key-here}
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
-      - CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+      <<: *common-variables
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - react-form-network
     volumes:
@@ -67,19 +72,24 @@ services:
       - "3000:3000"
     environment:
       - VITE_API_URL=http://localhost:8000
-      - VITE_ADMIN_EMAIL=${ADMIN_EMAIL:-admin@example.com}
+      - VITE_ADMIN_EMAIL=${ADMIN_EMAIL}
+      - DOCKER_ENV=true
+      - NODE_ENV=development
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     networks:
       - react-form-network
-    volumes:
-      - ./src:/app/src
-      - ./public:/app/public
-    command: npm run dev -- --host 0.0.0.0 --port 3000
+    # Remove conflicting volumes for development
+    # volumes:
+    #   - ./src:/app/src
+    #   - ./public:/app/public
+    # Use the built-in command from Dockerfile
+    # command: npm run dev -- --host 0.0.0.0 --port 3000
 
 volumes:
   mysql_data:
 
 networks:
   react-form-network:
-    driver: bridge 
+    driver: bridge

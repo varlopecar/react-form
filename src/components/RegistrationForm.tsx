@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { registrationSchema, type RegistrationFormData } from "../schemas/registrationSchema";
+import { Box, TextField, Button, Typography } from "@mui/material";
 
 /**
  * Props for the RegistrationForm component
@@ -89,103 +90,65 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmitHandler, onError)} role="form" className="space-y-6 max-w-lg mx-auto p-8 bg-white rounded-2xl shadow-lg">
-            <div>
-                <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700">
-                    Prénom
-                </label>
-                <input
-                    {...register("firstName")}
-                    id="firstName"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.firstName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700">
-                    Nom
-                </label>
-                <input
-                    {...register("lastName")}
-                    id="lastName"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.lastName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700">
-                    Email
-                </label>
-                <input
-                    {...register("email")}
-                    type="email"
-                    id="email"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="birthDate" className="block text-sm font-semibold text-gray-700">
-                    Date de naissance
-                </label>
-                <input
-                    {...register("birthDate", { valueAsDate: true })}
-                    type="date"
-                    id="birthDate"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.birthDate && (
-                    <p className="text-red-500 text-sm mt-1">{errors.birthDate.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="city" className="block text-sm font-semibold text-gray-700">
-                    Ville
-                </label>
-                <input
-                    {...register("city")}
-                    id="city"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.city && (
-                    <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
-                )}
-            </div>
-
-            <div>
-                <label htmlFor="postalCode" className="block text-sm font-semibold text-gray-700">
-                    Code postal
-                </label>
-                <input
-                    {...register("postalCode")}
-                    id="postalCode"
-                    className="mt-2 block w-full rounded-lg border border-gray-300 p-3 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-                {errors.postalCode && (
-                    <p className="text-red-500 text-sm mt-1">{errors.postalCode.message}</p>
-                )}
-            </div>
-
-            <button
+        <Box component="form" onSubmit={handleSubmit(onSubmitHandler, onError)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="h5" align="center" gutterBottom>
+                Formulaire d'inscription
+            </Typography>
+            <TextField
+                label="Prénom"
+                {...register("firstName")}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
+                fullWidth
+            />
+            <TextField
+                label="Nom"
+                {...register("lastName")}
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
+                fullWidth
+            />
+            <TextField
+                label="Email"
+                type="email"
+                {...register("email")}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+                fullWidth
+            />
+            <TextField
+                label="Date de naissance"
+                type="date"
+                {...register("birthDate", { valueAsDate: true })}
+                error={!!errors.birthDate}
+                helperText={errors.birthDate?.message}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+                label="Ville"
+                {...register("city")}
+                error={!!errors.city}
+                helperText={errors.city?.message}
+                fullWidth
+            />
+            <TextField
+                label="Code postal"
+                {...register("postalCode")}
+                error={!!errors.postalCode}
+                helperText={errors.postalCode?.message}
+                fullWidth
+            />
+            <Button
                 type="submit"
+                variant="contained"
+                color="primary"
                 disabled={!isFormComplete}
-                className={`w-full py-3 px-6 rounded-lg transition duration-300 ${isFormComplete
-                    ? "bg-blue-500 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
+                fullWidth
+                sx={{ mt: 2 }}
             >
                 S'inscrire
-            </button>
-        </form>
+            </Button>
+        </Box>
     );
 };

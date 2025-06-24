@@ -8,6 +8,8 @@ from typing import List, Optional
 import os
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+import subprocess
+import time
 
 from database import get_db, engine
 from models import Base, User
@@ -80,6 +82,65 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+
+def run_migrations():
+    """Run database migrations"""
+    try:
+        print("Running database migrations...")
+        result = subprocess.run(
+            ["alembic", "upgrade", "head"],
+            capture_output=True,
+            text=True,
+            cwd="/app"
+        )
+        if result.returncode == 0:
+            print("Migrations completed successfully")
+        else:
+            print(f"Migration failed: {result.stderr}")
+    except Exception as e:
+        print(f"Error running migrations: {e}")
+
+
+def create_admin_user():
+    """Create admin user if it doesn't exist"""
+    db = next(get_db())
+    try:
+        # Check if admin user already exists
+        admin_user = db.query(User).filter(
+            User.email == settings.admin_email).first()
+        if not admin_user:
+            # Create admin user
+            hashed_password = get_password_hash(settings.admin_password)
+            admin_user = User(
+                email=settings.admin_email,
+                password=hashed_password,
+                first_name="Admin",
+                last_name="User",
+                birth_date=datetime(1990, 1, 1).date(),
+                city="Paris",
+                postal_code="75001",
+                is_admin=True
+            )
+            db.add(admin_user)
+            db.commit()
+            print(f"Admin user created: {settings.admin_email}")
+        else:
+            print(f"Admin user already exists: {settings.admin_email}")
+    except Exception as e:
+        print(f"Error creating admin user: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
+
+# Create admin user on startup
+@app.on_event("startup")
+async def startup_event():
+    # Wait a bit for database to be ready
+    time.sleep(5)
+    run_migrations()
+    create_admin_user()
 
 
 @app.get("/")

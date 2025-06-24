@@ -22,7 +22,6 @@
     "test:integration": "node scripts/test-integration.js",
     "doc": "jsdoc --readme ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
     "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files",
-    "prepare": "npm run build",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "e2e": "cypress run",
@@ -32,8 +31,13 @@
     "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.1.2",
+    "@mui/material": "^7.1.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.27.0",
