@@ -18,7 +18,20 @@ from schemas import UserCreate, UserResponse, UserLogin, Token
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-# Settings
+# Determine which environment file to use
+
+
+def get_env_file():
+    """Determine which environment file to use based on environment"""
+    # Check for explicit environment setting
+    if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
+        return ".env.production"
+    elif os.getenv("VERCEL_ENV") or os.getenv("RAILWAY_ENVIRONMENT"):
+        # Vercel and Railway deployments
+        return ".env.production"
+    else:
+        # Default to local development
+        return ".env"
 
 
 class Settings(BaseSettings):
@@ -28,7 +41,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
 
     class Config:
-        env_file = ".env"
+        env_file = get_env_file()
         env_prefix = ""
         case_sensitive = False
 

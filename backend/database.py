@@ -4,24 +4,141 @@ from sqlalchemy.orm import sessionmaker
 import os
 import time
 from sqlalchemy.exc import OperationalError
+import urllib.parse
+from pydantic_settings import BaseSettings
+
+
+def get_env_file():
+    """Determine which environment file to use based on environment"""
+    # Check for explicit environment setting
+    if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
+        return ".env.production"
+    elif os.getenv("VERCEL_ENV") or os.getenv("RAILWAY_ENVIRONMENT"):
+        # Vercel and Railway deployments
+        return ".env.production"
+    else:
+        # Default to local development
+        return ".env"
+
+
+class DatabaseSettings(BaseSettings):
+    """Database settings with proper environment file handling"""
+    DATABASE_URL: str = None
+    MYSQL_USER: str = "react_user"
+    MYSQL_PASSWORD: str = "react_password"
+    MYSQL_DATABASE: str = "react_form_db"
+    MYSQL_HOST: str = "mysql"
+
+    class Config:
+        env_file = get_env_file()
+        env_prefix = ""
+        case_sensitive = False
+
+
+def get_ssl_config(database_url):
+    """Get appropriate SSL configuration based on database provider"""
+    if not database_url:
+        return {}
+
+    url_lower = database_url.lower()
+
+    # PlanetScale
+    if 'planetscale' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "VERIFY_IDENTITY",
+                "ssl_ca": "/etc/ssl/certs/ca-certificates.crt"
+            }
+        }
+
+    # Railway
+    elif 'railway' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
+    # Vercel
+    elif 'vercel' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
+    # Heroku
+    elif 'heroku' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
+    # Clever Cloud
+    elif 'clever-cloud' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
+    # Aiven Cloud (your production database)
+    elif 'aivencloud' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
+    # Default: no SSL for local development
+    return {}
+
+
+# Get database settings with proper environment file handling
+db_settings = DatabaseSettings()
 
 # Get database URL from environment variable or construct from individual components
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = db_settings.DATABASE_URL
 
 if not DATABASE_URL:
-    # Fallback to individual environment variables
-    MYSQL_USER = os.getenv("MYSQL_USER", "react_user")
-    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "react_password")
-    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "react_form_db")
-    # Use service name in Docker Compose
-    MYSQL_HOST = os.getenv("MYSQL_HOST", "mysql")
-    
+    # Fallback to individual environment variables (local development)
+    MYSQL_USER = db_settings.MYSQL_USER
+    MYSQL_PASSWORD = db_settings.MYSQL_PASSWORD
+    MYSQL_DATABASE = db_settings.MYSQL_DATABASE
+    MYSQL_HOST = db_settings.MYSQL_HOST
+
     # Construct database URL
     DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:3306/{MYSQL_DATABASE}"
+    print("Using local database configuration")
 else:
     # Ensure the database URL uses pymysql driver
     if DATABASE_URL.startswith("mysql://"):
         DATABASE_URL = DATABASE_URL.replace("mysql://", "mysql+pymysql://", 1)
+
+    # Remove any ssl-mode parameters from the URL that might cause issues
+    if "ssl-mode=" in DATABASE_URL:
+        # Parse the URL to remove ssl-mode parameter
+        parsed = urllib.parse.urlparse(DATABASE_URL)
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        # Remove ssl-mode from query parameters
+        if 'ssl-mode' in query_params:
+            del query_params['ssl-mode']
+
+        # Reconstruct the URL without ssl-mode
+        new_query = urllib.parse.urlencode(query_params, doseq=True)
+        DATABASE_URL = urllib.parse.urlunparse((
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            parsed.params,
+            new_query if new_query else None,
+            parsed.fragment
+        ))
+        print("Removed ssl-mode parameter from DATABASE_URL")
+
+    print("Using production database configuration")
 
 print(f"Using database URL: {DATABASE_URL[:50]}...")
 
@@ -33,7 +150,16 @@ def create_engine_with_retry():
 
     for attempt in range(max_retries):
         try:
-            engine = create_engine(DATABASE_URL)
+            # Get SSL configuration based on database provider
+            connect_args = get_ssl_config(DATABASE_URL)
+
+            engine = create_engine(
+                DATABASE_URL,
+                connect_args=connect_args,
+                pool_pre_ping=True,
+                pool_recycle=300
+            )
+
             # Test the connection
             with engine.connect() as conn:
                 conn.execute(text("SELECT 1"))

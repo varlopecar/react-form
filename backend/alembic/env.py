@@ -26,6 +26,21 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+# Determine which environment file to use
+
+
+def get_env_file():
+    """Determine which environment file to use based on environment"""
+    # Check for explicit environment setting
+    if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
+        return ".env.production"
+    elif os.getenv("VERCEL_ENV") or os.getenv("RAILWAY_ENVIRONMENT"):
+        # Vercel and Railway deployments
+        return ".env.production"
+    else:
+        # Default to local development
+        return ".env"
+
 
 class Settings(BaseSettings):
     MYSQL_USER: str = "root"
@@ -34,7 +49,7 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str = "react_form"
 
     class Config:
-        env_file = ".env"
+        env_file = get_env_file()
 
 
 def get_url():
