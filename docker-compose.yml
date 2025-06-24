@@ -71,10 +71,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:8000
-      - VITE_ADMIN_EMAIL=${ADMIN_EMAIL}
-      - DOCKER_ENV=true
-      - NODE_ENV=development
+      <<: *common-variables
     depends_on:
       backend:
         condition: service_started
