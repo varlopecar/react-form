@@ -160,11 +160,30 @@ jobs:
           CORS_ORIGINS: http://localhost:3000,http://localhost:5173
         run: |
           cd backend
-          uvicorn main:app --host 0.0.0.0 --port 8000 &
-          echo "Backend starting..."
-          sleep 15
-          curl -f http://localhost:8000/ || exit 1
-          echo "Backend is running"
+          echo "Starting backend server..."
+          uvicorn main:app --host 0.0.0.0 --port 8000 --log-level info &
+          BACKEND_PID=$!
+          echo "Backend PID: $BACKEND_PID"
+          echo "Waiting for backend to start..."
+          
+          # Wait up to 60 seconds for backend to be ready
+          for i in {1..60}; do
+            if curl -s http://localhost:8000/health > /dev/null 2>&1; then
+              echo "Backend is ready after $i seconds"
+              break
+            fi
+            if [ $i -eq 60 ]; then
+              echo "Backend failed to start within 60 seconds"
+              ps aux | grep uvicorn
+              exit 1
+            fi
+            echo "Waiting... ($i/60)"
+            sleep 1
+          done
+          
+          echo "Testing backend endpoint..."
+          curl -f http://localhost:8000/health || exit 1
+          echo "Backend is running successfully"
 
       - name: Start frontend
         env:

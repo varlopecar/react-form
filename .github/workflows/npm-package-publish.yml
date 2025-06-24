@@ -65,8 +65,23 @@ jobs:
           git config --global user.name "Carlos Vargas"
 
       - name: Bump version and publish
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
-          pnpm version patch --no-git-tag-version
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Check if this version exists on npm
+          if npm view @varlopecar/react-form@$CURRENT_VERSION > /dev/null 2>&1; then
+            echo "Version $CURRENT_VERSION already exists, incrementing patch version"
+            pnpm version patch --no-git-tag-version
+          else
+            echo "Version $CURRENT_VERSION does not exist on npm, using current version"
+          fi
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "Publishing version: $NEW_VERSION"
+          
           pnpm publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
