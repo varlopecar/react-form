@@ -16,11 +16,28 @@ const isDev = process.env.NODE_ENV === "development";
 // Check if we're building for web app
 const isWebBuild = process.env.BUILD_MODE === "web";
 
+// Custom plugin for HTML template replacement
+const htmlTemplatePlugin = () => {
+  return {
+    name: "html-template-replace",
+    transformIndexHtml(html: string) {
+      return html.replace(
+        /%VITE_API_URL%/g,
+        process.env.VITE_API_URL || "http://localhost:8000"
+      );
+    },
+  };
+};
+
 // https://vite.dev/config/
 export default defineConfig({
   // Only use the base path for GitHub Pages deployment
   base: isLib || isDocker || isDev ? "/" : isWebBuild ? "/react-form/" : "/",
-  plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
+  plugins: [
+    react(),
+    !isLib && tailwindcss(),
+    !isLib && htmlTemplatePlugin(),
+  ].filter(Boolean),
   server: {
     port: 3000,
     host: "0.0.0.0",

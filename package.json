@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "postbuild": "node scripts/setup-runtime-config.js",
     "predeploy": "vite build",
     "deploy": "gh-pages -d dist",
     "lint": "eslint .",

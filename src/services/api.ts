@@ -1,6 +1,35 @@
 import { RegistrationFormData } from "../schemas/registrationSchema";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// Extend Window interface for runtime environment variables
+declare global {
+  interface Window {
+    __ENV__?: {
+      VITE_API_URL?: string;
+    };
+  }
+}
+
+// More robust API URL configuration
+const getApiBaseUrl = (): string => {
+  // Try to get from environment variable (build-time)
+  const envUrl = import.meta.env.VITE_API_URL;
+
+  // Try to get from window.__ENV__ (runtime, if configured)
+  const runtimeUrl = window.__ENV__?.VITE_API_URL;
+
+  // Try to get from meta tag (runtime)
+  const metaUrl = document
+    .querySelector('meta[name="api-url"]')
+    ?.getAttribute("content");
+
+  // Use the first available URL, with fallback
+  const apiUrl = runtimeUrl || metaUrl || envUrl || "http://localhost:8000";
+
+  console.log("API Base URL:", apiUrl);
+  return apiUrl;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface User {
   id: number;

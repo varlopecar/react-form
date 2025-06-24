@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/react-form/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Runtime API URL configuration -->
+    <meta name="api-url" content="%VITE_API_URL%" />
     <title>React Form - CI/CD Project</title>
     <script type="text/javascript">
       // Handle redirects from 404.html
@@ -18,6 +20,12 @@
           window.history.replaceState(null, null, redirectPath);
         }
       })(window.location);
+
+      // Runtime environment configuration
+      // This allows setting environment variables at runtime
+      window.__ENV__ = {
+        VITE_API_URL: "%VITE_API_URL%",
+      };
     </script>
   </head>
   <body>
