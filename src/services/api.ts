@@ -32,7 +32,7 @@ const getApiBaseUrl = (): string => {
     metaUrl ||
     envUrl ||
     (isProduction
-      ? "https://backend-omega-khaki.vercel.app/"
+      ? "https://backend-omega-khaki.vercel.app"
       : "http://localhost:8000");
 
   console.log("API Base URL:", apiUrl, `(Production: ${isProduction})`);

@@ -17,13 +17,13 @@ const __dirname = path.dirname(__filename);
 // Configuration options
 const config = {
     // Default API URL (now production)
-    defaultApiUrl: 'https://backend-omega-khaki.vercel.app/',
+    defaultApiUrl: 'https://backend-omega-khaki.vercel.app',
 
     // Development API URL (for local development)
     developmentApiUrl: 'http://localhost:8000',
 
     // Production API URL (should be set via environment variable)
-    productionApiUrl: process.env.VITE_API_URL || 'https://backend-omega-khaki.vercel.app/',
+    productionApiUrl: process.env.VITE_API_URL || 'https://backend-omega-khaki.vercel.app',
 
     // Output directory
     outputDir: path.join(__dirname, '..', 'dist'),

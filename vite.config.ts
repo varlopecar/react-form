@@ -28,7 +28,7 @@ const htmlTemplatePlugin = () => {
           process.env.NODE_ENV === undefined;
         const defaultApiUrl = isDevelopment
           ? "http://localhost:8000"
-          : "https://backend-omega-khaki.vercel.app/";
+          : "https://backend-omega-khaki.vercel.app";
         const apiUrl = process.env.VITE_API_URL || defaultApiUrl;
         console.log(
           "🔧 Replacing VITE_API_URL in HTML template:",
