@@ -15,11 +15,13 @@ const isCI = process.env.CI === "true";
 const isDocker = process.env.DOCKER_ENV === "true";
 // Check if we're in development
 const isDev = process.env.NODE_ENV === "development";
+// Check if we're building for web app
+const isWebBuild = process.env.BUILD_MODE === "web";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Only use the base path for the web app in production and not in Docker/CI/Dev
-  base: isLib || isCI || isDocker || isDev ? "/" : "/react-form/",
+  // Only use the base path for GitHub Pages deployment
+  base: isLib || isDocker || isDev ? "/" : (isWebBuild ? "/react-form/" : "/"),
   plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
   server: {
     port: 3000,

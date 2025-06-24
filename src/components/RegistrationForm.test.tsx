@@ -46,7 +46,34 @@ describe("RegistrationForm", () => {
     it("should show error messages when form is submitted with errors", async () => {
         render(<RegistrationForm onSubmit={mockOnSubmit} />);
 
-        // Mock the form submission directly without clicking the button
+        // Fill in some fields but leave others empty to trigger validation errors
+        fireEvent.input(screen.getByLabelText("Prénom"), {
+            target: { value: "Jean" },
+        });
+        fireEvent.input(screen.getByLabelText("Nom"), {
+            target: { value: "Dupont" },
+        });
+        fireEvent.input(screen.getByLabelText("Email"), {
+            target: { value: "jean@example.com" },
+        });
+        fireEvent.input(screen.getByLabelText("Date de naissance"), {
+            target: { value: "1990-01-01" },
+        });
+        fireEvent.input(screen.getByLabelText("Ville"), {
+            target: { value: "Paris" },
+        });
+        // Leave postal code empty or invalid
+        fireEvent.input(screen.getByLabelText("Code postal"), {
+            target: { value: "" },
+        });
+
+        // Wait for form to be in enabled state and then submit
+        await waitFor(() => {
+            // Button should be disabled due to empty postal code
+            expect(screen.getByText("S'inscrire")).toBeDisabled();
+        });
+
+        // Try to submit the form directly
         const form = screen.getByRole('form');
         fireEvent.submit(form);
 

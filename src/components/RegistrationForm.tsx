@@ -90,7 +90,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
     };
 
     return (
-        <Box component="form" onSubmit={handleSubmit(onSubmitHandler, onError)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box component="form" role="form" onSubmit={handleSubmit(onSubmitHandler, onError)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="h5" align="center" gutterBottom>
                 Formulaire d'inscription
             </Typography>
