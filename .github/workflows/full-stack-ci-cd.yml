@@ -165,7 +165,7 @@ jobs:
           BACKEND_PID=$!
           echo "Backend PID: $BACKEND_PID"
           echo "Waiting for backend to start..."
-          
+
           # Wait up to 60 seconds for backend to be ready
           for i in {1..60}; do
             if curl -s http://localhost:8000/health > /dev/null 2>&1; then
@@ -180,7 +180,7 @@ jobs:
             echo "Waiting... ($i/60)"
             sleep 1
           done
-          
+
           echo "Testing backend endpoint..."
           curl -f http://localhost:8000/health || exit 1
           echo "Backend is running successfully"
@@ -278,7 +278,7 @@ jobs:
 
       - name: Build frontend
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://backend-omega-khaki.vercel.app/' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://backend-omega-khaki.vercel.app' }}
         run: pnpm run build
 
       - name: Deploy to GitHub Pages
