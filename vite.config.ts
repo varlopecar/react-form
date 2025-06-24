@@ -20,11 +20,13 @@ const isWebBuild = process.env.BUILD_MODE === "web";
 const htmlTemplatePlugin = () => {
   return {
     name: "html-template-replace",
-    transformIndexHtml(html: string) {
-      return html.replace(
-        /%VITE_API_URL%/g,
-        process.env.VITE_API_URL || "http://localhost:8000"
-      );
+    transformIndexHtml: {
+      order: "pre" as const,
+      handler(html: string) {
+        const apiUrl = process.env.VITE_API_URL || "http://localhost:8000";
+        console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl);
+        return html.replace(/%VITE_API_URL%/g, apiUrl);
+      },
     },
   };
 };

@@ -18,19 +18,35 @@ var __filename = fileURLToPath(import.meta.url);
 var __dirname = dirname(__filename);
 // Check if we're building the library for NPM
 var isLib = process.env.BUILD_MODE === "lib";
-// Check if we're in CI environment
-var isCI = process.env.CI === "true";
 // Check if we're in Docker environment
 var isDocker = process.env.DOCKER_ENV === "true";
 // Check if we're in development
 var isDev = process.env.NODE_ENV === "development";
 // Check if we're building for web app
 var isWebBuild = process.env.BUILD_MODE === "web";
+// Custom plugin for HTML template replacement
+var htmlTemplatePlugin = function () {
+    return {
+        name: "html-template-replace",
+        transformIndexHtml: {
+            order: "pre",
+            handler: function (html) {
+                var apiUrl = process.env.VITE_API_URL || "http://localhost:8000";
+                console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl);
+                return html.replace(/%VITE_API_URL%/g, apiUrl);
+            },
+        },
+    };
+};
 // https://vite.dev/config/
 export default defineConfig({
     // Only use the base path for GitHub Pages deployment
-    base: isLib || isDocker || isDev ? "/" : (isWebBuild ? "/react-form/" : "/"),
-    plugins: [react(), !isLib && tailwindcss()].filter(Boolean),
+    base: isLib || isDocker || isDev ? "/" : isWebBuild ? "/react-form/" : "/",
+    plugins: [
+        react(),
+        !isLib && tailwindcss(),
+        !isLib && htmlTemplatePlugin(),
+    ].filter(Boolean),
     server: {
         port: 3000,
         host: "0.0.0.0",

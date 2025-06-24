@@ -7,8 +7,12 @@
  * It can be used to inject environment variables at runtime without rebuilding.
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Configuration options
 const config = {
@@ -118,13 +122,4 @@ function main() {
 }
 
 // Run if called directly
-if (require.main === module) {
-    main();
-}
-
-module.exports = {
-    generateRuntimeConfig,
-    writeConfigFile,
-    updateHtmlFile,
-    config
-}; 
+main(); 
