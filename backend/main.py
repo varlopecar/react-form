@@ -26,8 +26,8 @@ def get_env_file():
     # Check for explicit environment setting
     if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
         return ".env.production"
-    elif os.getenv("VERCEL_ENV") or os.getenv("RAILWAY_ENVIRONMENT"):
-        # Vercel and Railway deployments
+    elif os.getenv("VERCEL_ENV"):
+        # Vercel deployments
         return ".env.production"
     else:
         # Default to local development
@@ -35,9 +35,9 @@ def get_env_file():
 
 
 class Settings(BaseSettings):
-    secret_key: str = "your-secret-key-here"
-    admin_email: str = "admin@example.com"
-    admin_password: str = "admin123"
+    secret_key: str = "MtYzn1zEvto5XNXhkBHXVvE-y2Ikgwt8IhEdIFUr5eM"
+    admin_email: str = "loise.fenoll@ynov.com"
+    admin_password: str = "PvdrTAzTeR247sDnAZBr"
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
 
     class Config:
