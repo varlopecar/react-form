@@ -40,10 +40,6 @@ function App() {
     const redirectPath = urlParams.get('redirect');
 
     if (redirectPath) {
-      // Remove the redirect parameter from the URL
-      const newSearch = urlParams.toString().replace(/redirect=[^&]*&?/, '').replace(/&$/, '');
-      const newUrl = location.pathname + (newSearch ? '?' + newSearch : '') + location.hash;
-
       // Navigate to the original path
       navigate(redirectPath, { replace: true });
     }

@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { render, screen } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import { vi, test, describe, beforeEach, it, expect } from 'vitest';
 import "@testing-library/jest-dom";
-import App from "./App";
+import App from './App';
 import { ThemeProvider, createTheme } from "@mui/material";
 
 // Mock the RegistrationForm component
