@@ -207,22 +207,6 @@ jobs:
       - name: Run Cypress tests
         run: npx cypress run --browser chrome --headless
 
-      - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore
-
-      - name: Upload Cypress videos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
-
   deploy-backend:
     needs: [test, e2e]
     runs-on: ubuntu-latest
