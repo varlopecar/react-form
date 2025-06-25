@@ -1,9 +1,9 @@
 x-common-variables: &common-variables
-  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  MYSQL_DATABASE: ${MYSQL_DATABASE}
-  MYSQL_USER: ${MYSQL_USER}
-  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  MYSQL_HOST: ${MYSQL_HOST}
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+  MYSQL_DATABASE: ${MYSQL_DATABASE:-react_form_db}
+  MYSQL_USER: ${MYSQL_USER:-react_user}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD:-react_password}
+  MYSQL_HOST: ${MYSQL_HOST:-mysql}
 
 services:
   # MySQL Database
@@ -50,8 +50,9 @@ services:
       - "8000:8000"
     environment:
       <<: *common-variables
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-loise.fenoll@ynov.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-PvdrTAzTeR247sDnAZBr}
+      ENVIRONMENT: development
     depends_on:
       mysql:
         condition: service_healthy

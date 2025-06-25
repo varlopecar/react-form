@@ -6,6 +6,7 @@ import time
 from sqlalchemy.exc import OperationalError
 import urllib.parse
 from pydantic_settings import BaseSettings
+from typing import Optional
 
 
 def get_env_file():
@@ -23,7 +24,7 @@ def get_env_file():
 
 class DatabaseSettings(BaseSettings):
     """Database settings with proper environment file handling"""
-    DATABASE_URL: str = None
+    DATABASE_URL: Optional[str] = None
     MYSQL_USER: str = "react_user"
     MYSQL_PASSWORD: str = "react_password"
     MYSQL_DATABASE: str = "react_form_db"
@@ -33,6 +34,10 @@ class DatabaseSettings(BaseSettings):
         env_file = get_env_file()
         env_prefix = ""
         case_sensitive = False
+        # Allow missing env files
+        env_file_encoding = 'utf-8'
+        # Make DATABASE_URL optional
+        extra = "ignore"
 
 
 def get_ssl_config(database_url):
@@ -103,10 +108,10 @@ DATABASE_URL = db_settings.DATABASE_URL
 
 if not DATABASE_URL:
     # Fallback to individual environment variables (local development)
-    MYSQL_USER = db_settings.MYSQL_USER
-    MYSQL_PASSWORD = db_settings.MYSQL_PASSWORD
-    MYSQL_DATABASE = db_settings.MYSQL_DATABASE
-    MYSQL_HOST = db_settings.MYSQL_HOST
+    MYSQL_USER = db_settings.MYSQL_USER or "react_user"
+    MYSQL_PASSWORD = db_settings.MYSQL_PASSWORD or "react_password"
+    MYSQL_DATABASE = db_settings.MYSQL_DATABASE or "react_form_db"
+    MYSQL_HOST = db_settings.MYSQL_HOST or "mysql"
 
     # Construct database URL
     DATABASE_URL = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:3306/{MYSQL_DATABASE}"
