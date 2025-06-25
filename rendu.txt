@@ -1,3 +1,15 @@
-Backend :
+Last backend deploy :
 
 https://backend-git-main-varlopecars-projects.vercel.app
+
+Link du frontend :
+
+https://varlopecar.github.io/react-form/
+
+Link du github :
+
+https://github.com/varlopecar/react-form
+
+Link codecov :
+
+https://app.codecov.io/gh/varlopecar/react-form
