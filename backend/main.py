@@ -45,6 +45,16 @@ class Settings(BaseSettings):
         env_prefix = ""
         case_sensitive = False
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Override cors_origins with environment variable if present
+        env_cors_origins = os.getenv("CORS_ORIGINS")
+        if env_cors_origins:
+            self.cors_origins = env_cors_origins
+        print(f"Loaded CORS origins: {self.cors_origins}")
+        print(f"Environment CORS_ORIGINS: {os.getenv('CORS_ORIGINS')}")
+        print(f"Environment file: {get_env_file()}")
+
 
 settings = Settings()
 
@@ -57,9 +67,11 @@ security = HTTPBearer()
 app = FastAPI(title="React Form API", version="1.0.0")
 
 # CORS middleware
+cors_origins = settings.cors_origins.split(",")
+print(f"Setting up CORS with origins: {cors_origins}")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins.split(","),
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
