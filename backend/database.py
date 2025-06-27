@@ -96,6 +96,14 @@ def get_ssl_config(database_url):
             }
         }
 
+    # RocketAdmin
+    elif 'rocketadmin' in url_lower or 'rocket-admin' in url_lower:
+        return {
+            "ssl": {
+                "ssl_mode": "REQUIRED"
+            }
+        }
+
     # Default: no SSL for local development
     return {}
 
