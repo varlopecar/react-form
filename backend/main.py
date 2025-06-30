@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     secret_key: str = "MtYzn1zEvto5XNXhkBHXVvE-y2Ikgwt8IhEdIFUr5eM"
     admin_email: str = "loise.fenoll@ynov.com"
     admin_password: str = "PvdrTAzTeR247sDnAZBr"
-    cors_origins: str = "http://localhost:3000,http://localhost:5173"
+    cors_origins: str = "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io"
 
     class Config:
         env_file = get_env_file()
@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Override cors_origins with environment variable if present
-        env_cors_origins = "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io"
+        env_cors_origins = os.getenv('CORS_ORIGINS')
         if env_cors_origins:
             self.cors_origins = env_cors_origins
         print(f"Loaded CORS origins: {self.cors_origins}")
@@ -69,9 +69,20 @@ app = FastAPI(title="React Form API", version="1.0.0")
 # CORS middleware
 cors_origins = settings.cors_origins.split(",")
 print(f"Setting up CORS with origins: {cors_origins}")
+
+# Add specific origins for GitHub Pages and Vercel
+additional_origins = [
+    "https://varlopecar.github.io",  # Specific GitHub Pages domain
+    "https://react-form-varlopecar.vercel.app",  # Vercel preview if needed
+]
+
+# Combine the configured origins with additional ones
+all_origins = cors_origins + additional_origins
+print(f"Final CORS origins: {all_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=all_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
