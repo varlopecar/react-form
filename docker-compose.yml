@@ -112,12 +112,6 @@ services:
         condition: service_started
     networks:
       - react-form-network
-    # Remove conflicting volumes for development
-    # volumes:
-    #   - ./src:/app/src
-    #   - ./public:/app/public
-    # Use the built-in command from Dockerfile
-    # command: npm run dev -- --host 0.0.0.0 --port 3000
 
 volumes:
   mysql_data:

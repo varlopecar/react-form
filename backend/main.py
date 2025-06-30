@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Override cors_origins with environment variable if present
-        env_cors_origins = os.getenv("CORS_ORIGINS")
+        env_cors_origins = "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io"
         if env_cors_origins:
             self.cors_origins = env_cors_origins
         print(f"Loaded CORS origins: {self.cors_origins}")
