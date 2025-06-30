@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
@@ -66,23 +67,14 @@ security = HTTPBearer()
 
 app = FastAPI(title="React Form API", version="1.0.0")
 
-# CORS middleware
+# CORS middleware - simplified since we're using Vercel headers
 cors_origins = settings.cors_origins.split(",")
 print(f"Setting up CORS with origins: {cors_origins}")
 
-# Add specific origins for GitHub Pages and Vercel
-additional_origins = [
-    "https://varlopecar.github.io",  # Specific GitHub Pages domain
-    "https://react-form-varlopecar.vercel.app",  # Vercel preview if needed
-]
-
-# Combine the configured origins with additional ones
-all_origins = cors_origins + additional_origins
-print(f"Final CORS origins: {all_origins}")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=all_origins,
+    # Allow all origins since Vercel headers will handle specific ones
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -189,6 +181,21 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "message": "Backend is running successfully!"}
+
+
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
+    """Handle OPTIONS requests for CORS preflight"""
+    return Response(
+        status_code=200,
+        headers={
+            "Access-Control-Allow-Origin": "https://varlopecar.github.io",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Max-Age": "86400",
+        }
+    )
 
 
 @app.post("/register", response_model=UserResponse)
