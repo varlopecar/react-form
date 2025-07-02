@@ -26,3 +26,8 @@ public/docs
 *.njsproj
 *.sln
 *.sw?
+
+#backend python
+
+backend/.venv/
+backend/__pycache__/

@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, Navigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { Box, useTheme, useMediaQuery } from "@mui/material";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import HomePage from "./pages/HomePage";
+import PostsPage from "./pages/PostsPage";
+import UsersPage from "./pages/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import Navigation from "./components/Navigation";
+import Sidebar from "./components/Sidebar";
 import { apiService, User } from "./services/api";
 import { RegistrationFormData } from "./schemas/registrationSchema";
 
@@ -22,15 +28,18 @@ import { RegistrationFormData } from "./schemas/registrationSchema";
 function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     // Check if user is already logged in
     const token = localStorage.getItem("authToken");
     if (token) {
       setAuthToken(token);
-      loadCurrentUser(token);
+      loadCurrentUser();
     }
   }, []);
 
@@ -45,9 +54,9 @@ function App() {
     }
   }, [location, navigate]);
 
-  const loadCurrentUser = async (token: string) => {
+  const loadCurrentUser = async () => {
     try {
-      const user = await apiService.getCurrentUser(token);
+      const user = await apiService.getCurrentUser();
       setCurrentUser(user);
     } catch (error) {
       console.error("Error loading current user:", error);
@@ -56,6 +65,10 @@ function App() {
       setAuthToken(null);
       setCurrentUser(null);
     }
+  };
+
+  const handleSidebarToggle = () => {
+    setSidebarOpen(!sidebarOpen);
   };
 
   const handleRegistration = async (data: RegistrationFormData) => {
@@ -77,7 +90,7 @@ function App() {
       const response = await apiService.login(data);
       setAuthToken(response.access_token);
       localStorage.setItem("authToken", response.access_token);
-      await loadCurrentUser(response.access_token);
+      await loadCurrentUser();
       navigate("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
@@ -92,25 +105,77 @@ function App() {
     navigate("/login");
   };
 
+
+
   return (
     <>
       <Toaster position="top-right" />
-      <Routes>
-        <Route path="/" element={<Navigate to="/register" replace />} />
-        <Route path="/register" element={<RegisterPage onSubmit={handleRegistration} />} />
-        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route
-          path="/dashboard"
-          element={
-            authToken && currentUser ? (
-              <DashboardPage onLogout={handleLogout} user={currentUser} token={authToken} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <Navigation
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onMenuToggle={handleSidebarToggle}
+      />
+
+      <Box sx={{ display: 'flex' }}>
+        {/* Sidebar - only show when user is logged in */}
+        {currentUser && (
+          <Sidebar
+            currentUser={currentUser}
+            onLogout={handleLogout}
+            open={sidebarOpen}
+            onToggle={handleSidebarToggle}
+          />
+        )}
+
+        {/* Main content */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            ml: currentUser && !isMobile ? '240px' : 0, // Account for sidebar width
+            mt: '64px', // Account for app bar height
+            minHeight: 'calc(100vh - 64px)',
+            p: 2
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage onSubmit={handleRegistration} />} />
+            <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+            <Route
+              path="/dashboard"
+              element={
+                authToken && currentUser ? (
+                  <DashboardPage onLogout={handleLogout} user={currentUser} token={authToken} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/posts"
+              element={
+                authToken && currentUser ? (
+                  <PostsPage />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                authToken && currentUser ? (
+                  <UsersPage />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Box>
+      </Box>
     </>
   );
 }

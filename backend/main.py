@@ -67,14 +67,13 @@ security = HTTPBearer()
 
 app = FastAPI(title="React Form API", version="1.0.0")
 
-# CORS middleware - simplified since we're using Vercel headers
+# CORS middleware configuration
 cors_origins = settings.cors_origins.split(",")
 print(f"Setting up CORS with origins: {cors_origins}")
 
 app.add_middleware(
     CORSMiddleware,
-    # Allow all origins since Vercel headers will handle specific ones
-    allow_origins=["*"],
+    allow_origins=cors_origins,  # Use the configured origins instead of wildcard
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -181,21 +180,6 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "message": "Backend is running successfully!"}
-
-
-@app.options("/{full_path:path}")
-async def options_handler(full_path: str):
-    """Handle OPTIONS requests for CORS preflight"""
-    return Response(
-        status_code=200,
-        headers={
-            "Access-Control-Allow-Origin": "https://varlopecar.github.io",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
-            "Access-Control-Allow-Credentials": "true",
-            "Access-Control-Max-Age": "86400",
-        }
-    )
 
 
 @app.post("/register", response_model=UserResponse)

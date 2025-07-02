@@ -61,6 +61,22 @@ export interface AuthResponse {
   token_type: string;
 }
 
+// Blog post interfaces for Node.js/MongoDB API
+export interface BlogPost {
+  _id: string;
+  title: string;
+  content: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBlogPost {
+  title: string;
+  content: string;
+  author: string;
+}
+
 export class ApiService {
   private baseUrl: string;
 
@@ -70,15 +86,16 @@ export class ApiService {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit & { baseUrl?: string } = {}
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    const { baseUrl, ...requestOptions } = options;
+    const url = `${baseUrl || this.baseUrl}${endpoint}`;
     const config: RequestInit = {
       headers: {
         "Content-Type": "application/json",
-        ...options.headers,
+        ...requestOptions.headers,
       },
-      ...options,
+      ...requestOptions,
     };
 
     try {
@@ -114,7 +131,53 @@ export class ApiService {
     });
   }
 
-  async getUsers(token: string): Promise<User[]> {
+  // Blog post methods for Node.js/MongoDB API
+  async getBlogPosts(): Promise<BlogPost[]> {
+    // This will connect to the separate Node.js/MongoDB API
+    const blogApiUrl =
+      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+    return this.request<BlogPost[]>("/posts", {
+      baseUrl: blogApiUrl,
+    });
+  }
+
+  async createBlogPost(postData: CreateBlogPost): Promise<BlogPost> {
+    const blogApiUrl =
+      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+    return this.request<BlogPost>("/posts", {
+      method: "POST",
+      body: JSON.stringify(postData),
+      baseUrl: blogApiUrl,
+    });
+  }
+
+  async deleteBlogPost(postId: string): Promise<{ message: string }> {
+    const blogApiUrl =
+      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+    return this.request<{ message: string }>(`/posts/${postId}`, {
+      method: "DELETE",
+      baseUrl: blogApiUrl,
+    });
+  }
+
+  async updateBlogPost(
+    postId: string,
+    postData: CreateBlogPost
+  ): Promise<BlogPost> {
+    const blogApiUrl =
+      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+    return this.request<BlogPost>(`/posts/${postId}`, {
+      method: "PUT",
+      body: JSON.stringify(postData),
+      baseUrl: blogApiUrl,
+    });
+  }
+
+  // User management methods (without token parameter for convenience)
+  async getUsers(): Promise<User[]> {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("No authentication token");
+
     return this.request<User[]>("/users", {
       headers: {
         "Content-Type": "application/json",
@@ -123,10 +186,10 @@ export class ApiService {
     });
   }
 
-  async deleteUser(
-    userId: number,
-    token: string
-  ): Promise<{ message: string }> {
+  async deleteUser(userId: number): Promise<{ message: string }> {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("No authentication token");
+
     return this.request<{ message: string }>(`/users/${userId}`, {
       method: "DELETE",
       headers: {
@@ -136,7 +199,10 @@ export class ApiService {
     });
   }
 
-  async getCurrentUser(token: string): Promise<User> {
+  async getCurrentUser(): Promise<User> {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("No authentication token");
+
     return this.request<User>("/me", {
       headers: {
         "Content-Type": "application/json",
@@ -146,4 +212,30 @@ export class ApiService {
   }
 }
 
-export const apiService = new ApiService();
+// Use mock service for frontend testing (no API calls)
+// Change this to false to use real API
+const USE_MOCK = false;
+
+// Import mock service
+import { mockApiService } from "./apiMock";
+
+// Create a wrapper that provides the correct interface
+const createApiService = () => {
+  if (USE_MOCK) {
+    return {
+      registerUser: mockApiService.registerUser.bind(mockApiService),
+      login: mockApiService.login.bind(mockApiService),
+      getUsers: mockApiService.getUsersWithoutToken.bind(mockApiService),
+      deleteUser: mockApiService.deleteUserWithoutToken.bind(mockApiService),
+      getCurrentUser:
+        mockApiService.getCurrentUserWithoutToken.bind(mockApiService),
+      getBlogPosts: mockApiService.getBlogPosts.bind(mockApiService),
+      createBlogPost: mockApiService.createBlogPost.bind(mockApiService),
+      deleteBlogPost: mockApiService.deleteBlogPost.bind(mockApiService),
+      updateBlogPost: mockApiService.updateBlogPost.bind(mockApiService),
+    };
+  }
+  return new ApiService();
+};
+
+export const apiService = createApiService();

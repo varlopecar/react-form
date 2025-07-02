@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ApiService } from "./api";
 import { RegistrationFormData } from "../schemas/registrationSchema";
+import type { Mock } from "vitest";
 
 // Mock fetch globally
 global.fetch = vi.fn();
@@ -11,6 +12,15 @@ const apiService = new ApiService("http://localhost:8000");
 describe("ApiService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Mock localStorage for auth token
+    global.localStorage = {
+      getItem: vi.fn(() => "user@example.com"),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+      key: vi.fn(),
+      length: 1,
+    } as unknown as Storage;
   });
 
   describe("registerUser", () => {
@@ -28,7 +38,7 @@ describe("ApiService", () => {
         updated_at: "2024-01-01T00:00:00Z",
       };
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockUser,
       });
@@ -56,7 +66,7 @@ describe("ApiService", () => {
     });
 
     it("should handle registration errors", async () => {
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: false,
         status: 400,
         json: async () => ({ detail: "Email already registered" }),
@@ -85,7 +95,7 @@ describe("ApiService", () => {
         token_type: "bearer",
       };
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
@@ -108,7 +118,7 @@ describe("ApiService", () => {
     });
 
     it("should handle login errors", async () => {
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: false,
         status: 401,
         json: async () => ({ detail: "Incorrect email or password" }),
@@ -142,13 +152,12 @@ describe("ApiService", () => {
         },
       ];
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockUsers,
       });
 
-      const token = "user@example.com";
-      const result = await apiService.getUsers(token);
+      const result = await apiService.getUsers();
 
       expect(fetch).toHaveBeenCalledWith("http://localhost:8000/users", {
         headers: {
@@ -164,14 +173,18 @@ describe("ApiService", () => {
     it("should delete a user successfully", async () => {
       const mockResponse = { message: "User deleted successfully" };
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
       });
 
-      const token = "admin@example.com";
+      // Set the correct token for this test
+      (global.localStorage.getItem as Mock).mockReturnValue(
+        "admin@example.com"
+      );
+
       const userId = 1;
-      const result = await apiService.deleteUser(userId, token);
+      const result = await apiService.deleteUser(userId);
 
       expect(fetch).toHaveBeenCalledWith("http://localhost:8000/users/1", {
         method: "DELETE",
@@ -199,13 +212,17 @@ describe("ApiService", () => {
         updated_at: "2024-01-01T00:00:00Z",
       };
 
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockUser,
       });
 
-      const token = "current@example.com";
-      const result = await apiService.getCurrentUser(token);
+      // Set the correct token for this test
+      (global.localStorage.getItem as Mock).mockReturnValue(
+        "current@example.com"
+      );
+
+      const result = await apiService.getCurrentUser();
 
       expect(fetch).toHaveBeenCalledWith("http://localhost:8000/me", {
         headers: {
@@ -219,7 +236,9 @@ describe("ApiService", () => {
 
   describe("error handling", () => {
     it("should handle network errors", async () => {
-      (fetch as any).mockRejectedValueOnce(new Error("Network error"));
+      (fetch as unknown as Mock).mockRejectedValueOnce(
+        new Error("Network error")
+      );
 
       await expect(
         apiService.login({ email: "test@example.com", password: "test" })
@@ -227,7 +246,7 @@ describe("ApiService", () => {
     });
 
     it("should handle JSON parsing errors", async () => {
-      (fetch as any).mockResolvedValueOnce({
+      (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
         json: async () => {
