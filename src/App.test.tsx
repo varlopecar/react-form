@@ -23,6 +23,30 @@ vi.mock("./pages/DashboardPage", () => ({
   default: () => <div data-testid="dashboard-page">Dashboard Page</div>,
 }));
 
+vi.mock("./pages/HomePage", () => ({
+  default: () => <div data-testid="home-page">Home Page</div>,
+}));
+
+vi.mock("./pages/PostsPage", () => ({
+  default: () => <div data-testid="posts-page">Posts Page</div>,
+}));
+
+vi.mock("./pages/UsersPage", () => ({
+  default: () => <div data-testid="users-page">Users Page</div>,
+}));
+
+vi.mock("./pages/NotFoundPage", () => ({
+  default: () => <div data-testid="not-found-page">404 Page Not Found</div>,
+}));
+
+vi.mock("./components/Navigation", () => ({
+  default: () => <div data-testid="navigation">Navigation</div>,
+}));
+
+vi.mock("./components/Sidebar", () => ({
+  default: () => <div data-testid="sidebar">Sidebar</div>,
+}));
+
 // Mock the API service
 vi.mock("./services/api", () => ({
   apiService: {
@@ -35,6 +59,10 @@ vi.mock("./services/api", () => ({
 // Mock react-hot-toast
 vi.mock('react-hot-toast', () => ({
   Toaster: () => <div data-testid="toaster" />,
+  toast: {
+    error: vi.fn(),
+    success: vi.fn(),
+  },
 }));
 
 // Mock localStorage
@@ -91,14 +119,13 @@ describe("App Component", () => {
   test('redirects to register when accessing root path', () => {
     window.history.pushState({}, '', '/');
     renderWithRouter(<App />);
-    expect(screen.getByText(/register/i)).toBeInTheDocument();
+    expect(screen.getByTestId("register-page")).toBeInTheDocument();
   });
 
   test('shows 404 page for unknown routes', () => {
     window.history.pushState({}, '', '/unknown-route');
     renderWithRouter(<App />);
-    expect(screen.getByText('404')).toBeInTheDocument();
-    expect(screen.getByText('Page Not Found')).toBeInTheDocument();
+    expect(screen.getByTestId("not-found-page")).toBeInTheDocument();
   });
 
   test('handles redirect parameter from 404.html', () => {
@@ -106,6 +133,6 @@ describe("App Component", () => {
     window.history.pushState({}, '', '/?redirect=%2Fdashboard');
     renderWithRouter(<App />);
     // Should redirect to dashboard, but since no auth token, should redirect to login
-    expect(screen.getByText(/login/i)).toBeInTheDocument();
+    expect(screen.getByTestId("login-page")).toBeInTheDocument();
   });
 });

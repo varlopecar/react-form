@@ -10,7 +10,7 @@ interface RegisterPageProps {
 export default function RegisterPage({ onSubmit }: RegisterPageProps) {
     const navigate = useNavigate();
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 8 }}>
+        <Box data-testid="register-page" sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 8 }}>
             <Paper elevation={3} sx={{ maxWidth: 400, mx: 'auto', p: 4 }}>
                 <Typography variant="h4" align="center" gutterBottom>
                     Register

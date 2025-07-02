@@ -139,7 +139,7 @@ function App() {
           }}
         >
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Navigate to="/register" replace />} />
             <Route path="/register" element={<RegisterPage onSubmit={handleRegistration} />} />
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
             <Route
