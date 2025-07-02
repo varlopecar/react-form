@@ -5,7 +5,6 @@ import { Box, useTheme, useMediaQuery } from "@mui/material";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
-import HomePage from "./pages/HomePage";
 import PostsPage from "./pages/PostsPage";
 import UsersPage from "./pages/UsersPage";
 import NotFoundPage from "./pages/NotFoundPage";
