@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import List, Optional
@@ -12,7 +13,7 @@ from pydantic_settings import BaseSettings
 import subprocess
 import time
 
-from database import get_db, engine
+from database import get_db, engine, DATABASE_URL
 from models import Base, User
 from schemas import UserCreate, UserResponse, UserLogin, Token
 
@@ -179,7 +180,52 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "timestamp": datetime.utcnow().isoformat(), "message": "Backend is running successfully!"}
+    try:
+        # Test database connection
+        db = next(get_db())
+        db.execute(text("SELECT 1"))
+        db.close()
+        return {
+            "status": "healthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "message": "Backend is running successfully!",
+            "database": "connected"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.utcnow().isoformat(),
+            "message": f"Database connection failed: {str(e)}",
+            "database": "disconnected"
+        }
+
+
+@app.get("/debug")
+def debug_info():
+    """Debug endpoint to check environment and database status"""
+    try:
+        # Test database connection
+        db = next(get_db())
+        db.execute(text("SELECT 1"))
+        db.close()
+        db_status = "connected"
+    except Exception as e:
+        db_status = f"error: {str(e)}"
+
+    return {
+        "environment": {
+            "vercel_env": os.getenv("VERCEL_ENV"),
+            "node_env": os.getenv("NODE_ENV"),
+            "environment": os.getenv("ENVIRONMENT"),
+            "database_url_set": bool(os.getenv("DATABASE_URL")),
+            "cors_origins": os.getenv("CORS_ORIGINS")
+        },
+        "database": {
+            "status": db_status,
+            "url_preview": DATABASE_URL[:50] + "..." if DATABASE_URL else "None"
+        },
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 
 @app.post("/register", response_model=UserResponse)
@@ -209,19 +255,27 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @app.post("/login", response_model=Token)
 def login(user_credentials: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == user_credentials.email).first()
-    if not user or not verify_password(user_credentials.password, user.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    try:
+        user = db.query(User).filter(
+            User.email == user_credentials.email).first()
+        if not user or not verify_password(user_credentials.password, user.password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect email or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
 
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
-    return {"access_token": user.email, "token_type": "bearer"}
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+        )
+        return {"access_token": user.email, "token_type": "bearer"}
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Database error: {str(e)}"
+        )
 
 
 @app.get("/users", response_model=List[UserResponse])

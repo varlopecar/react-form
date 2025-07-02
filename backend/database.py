@@ -206,5 +206,9 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
+    except Exception as e:
+        print(f"Database session error: {str(e)}")
+        db.rollback()
+        raise e
     finally:
         db.close()
