@@ -32,8 +32,19 @@ const getApiBaseUrl = (): string => {
     metaUrl ||
     envUrl ||
     (isProduction
-      ? "https://backend-omega-khaki.vercel.app"
+      ? "https://react-form-chi-one.vercel.app"
       : "http://localhost:8000");
+
+  // Debug logging
+  console.log("🔍 API URL Debug:", {
+    envUrl,
+    runtimeUrl,
+    metaUrl,
+    isProduction,
+    finalApiUrl: apiUrl,
+    hostname: window.location.hostname,
+    importMetaEnvProd: import.meta.env.PROD
+  });
 
   return apiUrl;
 };

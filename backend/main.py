@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     secret_key: str = "MtYzn1zEvto5XNXhkBHXVvE-y2Ikgwt8IhEdIFUr5eM"
     admin_email: str = "loise.fenoll@ynov.com"
     admin_password: str = "PvdrTAzTeR247sDnAZBr"
-    cors_origins: str = "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io"
+    cors_origins: str = "http://localhost:3000,http://localhost:3001,http://localhost:5173,https://varlopecar.github.io"
 
     class Config:
         env_file = get_env_file()
@@ -133,12 +133,13 @@ def run_migrations():
 
 
 def create_admin_user():
-    """Create admin user if it doesn't exist"""
+    """Create admin user if it doesn't exist, or update password if needed"""
     db = next(get_db())
     try:
         # Check if admin user already exists
         admin_user = db.query(User).filter(
             User.email == settings.admin_email).first()
+
         if not admin_user:
             # Create admin user
             hashed_password = get_password_hash(settings.admin_password)
@@ -154,12 +155,37 @@ def create_admin_user():
             )
             db.add(admin_user)
             db.commit()
-            print(f"Admin user created: {settings.admin_email}")
+            print(f"✅ Admin user created: {settings.admin_email}")
         else:
-            print(f"Admin user already exists: {settings.admin_email}")
+            # Admin user exists, check if password needs updating
+            try:
+                # Try to verify the current password
+                if verify_password(settings.admin_password, admin_user.password):
+                    print(
+                        f"✅ Admin user already exists with correct password: {settings.admin_email}")
+                else:
+                    # Password doesn't match, update it
+                    print(
+                        f"🔄 Updating admin user password: {settings.admin_email}")
+                    admin_user.password = get_password_hash(
+                        settings.admin_password)
+                    db.commit()
+                    print(
+                        f"✅ Admin user password updated: {settings.admin_email}")
+            except Exception as hash_error:
+                # Hash verification failed, update the password
+                print(
+                    f"🔄 Hash verification failed, updating admin user password: {settings.admin_email}")
+                print(f"   Hash error: {hash_error}")
+                admin_user.password = get_password_hash(
+                    settings.admin_password)
+                db.commit()
+                print(f"✅ Admin user password updated: {settings.admin_email}")
+
     except Exception as e:
-        print(f"Error creating admin user: {e}")
+        print(f"❌ Error with admin user: {e}")
         db.rollback()
+        raise
     finally:
         db.close()
 
@@ -212,18 +238,38 @@ def debug_info():
     except Exception as e:
         db_status = f"error: {str(e)}"
 
+    # Check admin user status
+    try:
+        db = next(get_db())
+        admin_user = db.query(User).filter(User.email == settings.admin_email).first()
+        if admin_user:
+            admin_status = {
+                "exists": True,
+                "email": admin_user.email,
+                "is_admin": admin_user.is_admin,
+                "password_hash_length": len(admin_user.password) if admin_user.password else 0,
+                "password_hash_preview": admin_user.password[:20] + "..." if admin_user.password else "None"
+            }
+        else:
+            admin_status = {"exists": False}
+        db.close()
+    except Exception as e:
+        admin_status = {"error": str(e)}
+
     return {
         "environment": {
             "vercel_env": os.getenv("VERCEL_ENV"),
             "node_env": os.getenv("NODE_ENV"),
             "environment": os.getenv("ENVIRONMENT"),
             "database_url_set": bool(os.getenv("DATABASE_URL")),
-            "cors_origins": os.getenv("CORS_ORIGINS")
+            "cors_origins": os.getenv("CORS_ORIGINS"),
+            "admin_email": settings.admin_email
         },
         "database": {
             "status": db_status,
             "url_preview": DATABASE_URL[:50] + "..." if DATABASE_URL else "None"
         },
+        "admin_user": admin_status,
         "timestamp": datetime.utcnow().isoformat()
     }
 
@@ -307,3 +353,20 @@ def delete_user(user_id: int, current_user: User = Depends(get_current_user), db
 @app.get("/me", response_model=UserResponse)
 def get_current_user_info(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@app.post("/admin/setup")
+def setup_admin_user():
+    """Manually trigger admin user creation/update"""
+    try:
+        create_admin_user()
+        return {
+            "message": "Admin user setup completed successfully",
+            "admin_email": settings.admin_email,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to setup admin user: {str(e)}"
+        )

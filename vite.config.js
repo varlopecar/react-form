@@ -34,8 +34,8 @@ var htmlTemplatePlugin = function () {
                 var isDevelopment = process.env.NODE_ENV === "development" ||
                     process.env.NODE_ENV === undefined;
                 var defaultApiUrl = isDevelopment
-                    ? "http://localhost:8000"
-                    : "https://backend-omega-khaki.vercel.app";
+  ? "http://localhost:8000"
+  : "https://react-form-chi-one.vercel.app";
                 var apiUrl = process.env.VITE_API_URL || defaultApiUrl;
                 console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl, "(".concat(isDevelopment ? "development" : "production", ")"));
                 return html.replace(/%VITE_API_URL%/g, apiUrl);

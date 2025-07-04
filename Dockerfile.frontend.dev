@@ -16,7 +16,7 @@ COPY pnpm-lock.yaml ./
 RUN pnpm config set registry https://registry.npmjs.org/ && \
     pnpm config set fetch-timeout 300000 && \
     pnpm config set fetch-retries 5 && \
-    pnpm install --frozen-lockfile --network-timeout 300000
+    pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .

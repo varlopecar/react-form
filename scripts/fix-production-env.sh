@@ -16,7 +16,7 @@ echo "✅ Created backup: .env.production.backup"
 sed -i '' 's/# DATABASE_URL=/DATABASE_URL=/' .env.production
 
 # Ensure VITE_API_URL is set correctly
-sed -i '' 's|VITE_API_URL=.*|VITE_API_URL=https://backend-44yunag51-varlopecars-projects.vercel.app|' .env.production
+sed -i '' 's|VITE_API_URL=.*|VITE_API_URL=https://react-form-chi-one.vercel.app|' .env.production
 
 echo "✅ Updated .env.production:"
 echo "   - Uncommented DATABASE_URL"

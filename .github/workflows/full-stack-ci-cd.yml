@@ -262,7 +262,7 @@ jobs:
 
       - name: Build frontend
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://backend-omega-khaki.vercel.app' }}
+          VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://react-form-chi-one.vercel.app' }}
         run: pnpm run build
 
       - name: Deploy to GitHub Pages
