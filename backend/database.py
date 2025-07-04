@@ -14,8 +14,8 @@ def get_env_file():
     # Check for explicit environment setting
     if os.getenv("NODE_ENV") == "production" or os.getenv("ENVIRONMENT") == "production":
         return ".env.production"
-    elif os.getenv("VERCEL_ENV") or os.getenv("RAILWAY_ENVIRONMENT"):
-        # Vercel and Railway deployments
+    elif os.getenv("VERCEL_ENV"):
+        # Vercel deployments
         return ".env.production"
     else:
         # Default to local development
