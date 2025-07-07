@@ -8,6 +8,7 @@ class UserRegister(BaseModel):
     birth_date: date
     city: str
     postal_code: str
+    password: str
 
 class UserLogin(BaseModel):
     email: EmailStr

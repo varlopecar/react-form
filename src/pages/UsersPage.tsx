@@ -36,11 +36,10 @@ export default function UsersPage() {
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [searchTerm, setSearchTerm] = useState("");
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentUser] = useState<User | null>(null);
 
     useEffect(() => {
         loadUsers();
-        loadCurrentUser();
     }, []);
 
     useEffect(() => {
@@ -67,17 +66,7 @@ export default function UsersPage() {
         }
     };
 
-    const loadCurrentUser = async () => {
-        try {
-            const token = localStorage.getItem("authToken");
-            if (token) {
-                const user = await apiService.getCurrentUser();
-                setCurrentUser(user);
-            }
-        } catch (error) {
-            console.error("Error loading current user:", error);
-        }
-    };
+
 
     const handleDeleteUser = async (userId: number) => {
         const userToDelete = users.find(u => u.id === userId);

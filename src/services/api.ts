@@ -39,6 +39,7 @@ export interface LoginCredentials {
 export interface AuthResponse {
   access_token: string;
   token_type: string;
+  user: User;
 }
 
 // Blog post interfaces for Node.js/MongoDB API
@@ -198,17 +199,7 @@ export class ApiService {
     });
   }
 
-  async getCurrentUser(): Promise<User> {
-    const token = localStorage.getItem("authToken");
-    if (!token) throw new Error("No authentication token");
 
-    return this.request<User>("/me", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
 }
 
 // Use mock service for frontend testing (no API calls)
@@ -226,8 +217,7 @@ const createApiService = () => {
       login: mockApiService.login.bind(mockApiService),
       getUsers: mockApiService.getUsersWithoutToken.bind(mockApiService),
       deleteUser: mockApiService.deleteUserWithoutToken.bind(mockApiService),
-      getCurrentUser:
-        mockApiService.getCurrentUserWithoutToken.bind(mockApiService),
+
       getBlogPosts: mockApiService.getBlogPosts.bind(mockApiService),
       createBlogPost: mockApiService.createBlogPost.bind(mockApiService),
       deleteBlogPost: mockApiService.deleteBlogPost.bind(mockApiService),

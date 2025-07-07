@@ -15,8 +15,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://localhost:5173",
-        "https://enzocasalini.github.io",
-        "https://integ-deploiement.vercel.app"
+        "https://varlopecar.github.io",
+        "https://python-api.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -41,15 +41,20 @@ def register_user(user_data: UserRegister):
         if cursor.fetchone():
             raise HTTPException(status_code=400, detail="Email already registered")
         
-        # Insert new user (without password for registration)
+        # Hash the password
+        from auth import hash_password
+        hashed_password = hash_password(user_data.password)
+        
+        # Insert new user with hashed password
         sql = """
-            INSERT INTO users (last_name, first_name, email, birth_date, city, postal_code, role) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO users (last_name, first_name, email, password, birth_date, city, postal_code, role) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """
         values = (
             user_data.last_name,
             user_data.first_name,
             user_data.email,
+            hashed_password,
             user_data.birth_date,
             user_data.city,
             user_data.postal_code,
@@ -123,7 +128,9 @@ def login_user(user_data: UserLogin):
                 "birth_date": user['birth_date'],
                 "city": user['city'],
                 "postal_code": user['postal_code'],
-                "role": user['role']
+                "is_admin": user['role'] == 'admin',
+                "created_at": user.get('created_at', '2024-01-01T00:00:00Z'),
+                "updated_at": user.get('updated_at', '2024-01-01T00:00:00Z')
             }
         }
         
@@ -141,10 +148,26 @@ def get_users(current_admin: dict = Depends(get_current_admin)):
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
         
-        cursor.execute("SELECT id, last_name, first_name, email, birth_date, city, postal_code, role FROM users")
+        cursor.execute("SELECT id, last_name, first_name, email, birth_date, city, postal_code, role, created_at, updated_at FROM users")
         users = cursor.fetchall()
         
-        return users
+        # Transform users to match frontend expectations
+        transformed_users = []
+        for user in users:
+            transformed_users.append({
+                "id": user['id'],
+                "last_name": user['last_name'],
+                "first_name": user['first_name'],
+                "email": user['email'],
+                "birth_date": user['birth_date'],
+                "city": user['city'],
+                "postal_code": user['postal_code'],
+                "is_admin": user['role'] == 'admin',
+                "created_at": user.get('created_at', '2024-01-01T00:00:00Z'),
+                "updated_at": user.get('updated_at', '2024-01-01T00:00:00Z')
+            })
+        
+        return transformed_users
         
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=str(err))

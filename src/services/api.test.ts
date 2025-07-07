@@ -93,6 +93,18 @@ describe("ApiService", () => {
       const mockResponse = {
         access_token: "user@example.com",
         token_type: "bearer",
+        user: {
+          id: 1,
+          email: "user@example.com",
+          first_name: "Test",
+          last_name: "User",
+          birth_date: "1990-01-01",
+          city: "Paris",
+          postal_code: "75001",
+          is_admin: false,
+          created_at: "2024-01-01T00:00:00Z",
+          updated_at: "2024-01-01T00:00:00Z",
+        },
       };
 
       (fetch as unknown as Mock).mockResolvedValueOnce({
@@ -197,42 +209,7 @@ describe("ApiService", () => {
     });
   });
 
-  describe("getCurrentUser", () => {
-    it("should fetch current user info", async () => {
-      const mockUser = {
-        id: 1,
-        email: "current@example.com",
-        first_name: "Current",
-        last_name: "User",
-        birth_date: "1990-01-01",
-        city: "Paris",
-        postal_code: "75001",
-        is_admin: true,
-        created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-01-01T00:00:00Z",
-      };
 
-      (fetch as unknown as Mock).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockUser,
-      });
-
-      // Set the correct token for this test
-      (global.localStorage.getItem as Mock).mockReturnValue(
-        "current@example.com"
-      );
-
-      const result = await apiService.getCurrentUser();
-
-      expect(fetch).toHaveBeenCalledWith("http://localhost:8000/me", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer current@example.com",
-        },
-      });
-      expect(result).toEqual(mockUser);
-    });
-  });
 
   describe("error handling", () => {
     it("should handle network errors", async () => {
