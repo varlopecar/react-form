@@ -10,14 +10,13 @@ from database import get_connection, create_admin_user
 app = FastAPI(title="User Management API", version="1.0.0")
 
 
+# Get CORS origins from environment variable or use defaults
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api.vercel.app")
+cors_origins_list = [origin.strip() for origin in cors_origins.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "https://varlopecar.github.io",
-        "https://python-api.vercel.app"
-    ],
+    allow_origins=cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -204,3 +203,18 @@ def delete_user(user_id: int, current_admin: dict = Depends(get_current_admin)):
 @app.get("/")
 def read_root():
     return {"message": "User Management API is running"}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for Docker and CI/CD"""
+    try:
+        # Test database connection
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return {"status": "healthy", "database": "connected"}
+    except Exception as e:
+        return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
