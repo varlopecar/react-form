@@ -222,6 +222,7 @@ const createApiService = () => {
       createBlogPost: mockApiService.createBlogPost.bind(mockApiService),
       deleteBlogPost: mockApiService.deleteBlogPost.bind(mockApiService),
       updateBlogPost: mockApiService.updateBlogPost.bind(mockApiService),
+      testConnection: mockApiService.testConnection.bind(mockApiService),
     };
   }
   return new ApiService();

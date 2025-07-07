@@ -11,15 +11,16 @@ app = FastAPI(title="User Management API", version="1.0.0")
 
 
 # Get CORS origins from environment variable or use defaults
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api-six-indol.vercel.app/")
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api-six-indol.vercel.app")
 cors_origins_list = [origin.strip() for origin in cors_origins.split(",")]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Startup event
@@ -215,6 +216,11 @@ def delete_user(user_id: int, current_admin: dict = Depends(get_current_admin)):
 @app.get("/")
 def read_root():
     return {"message": "React Form API"}
+
+@app.options("/{full_path:path}")
+def options_handler(full_path: str):
+    """Handle OPTIONS requests for CORS preflight"""
+    return {"message": "OK"}
 
 @app.get("/health")
 def health_check():
