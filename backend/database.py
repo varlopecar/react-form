@@ -1,49 +1,54 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 import os
-from pydantic_settings import BaseSettings
+import mysql.connector
+from mysql.connector import Error
 
 
-class DatabaseSettings(BaseSettings):
-    """Database settings"""
-    MYSQL_USER: str = "user"
-    MYSQL_PASSWORD: str = "password"
-    MYSQL_DATABASE: str = "user_registration"
-    MYSQL_HOST: str = "mysql"
-
-    class Config:
-        env_file = "../.env"
-        env_prefix = ""
-        case_sensitive = False
-        extra = "ignore"  # Ignore extra fields in .env file
+def get_connection():
+    """Get MySQL database connection"""
+    return mysql.connector.connect(
+        database=os.getenv("MYSQL_DATABASE"),
+        user=os.getenv("MYSQL_USER"),
+        password=os.getenv("MYSQL_PASSWORD"),
+        port=3306,
+        host=os.getenv("MYSQL_HOST")
+    )
 
 
-# Get database settings
-db_settings = DatabaseSettings()
-
-# Create database URL
-DATABASE_URL = f"mysql+pymysql://{db_settings.MYSQL_USER}:{db_settings.MYSQL_PASSWORD}@{db_settings.MYSQL_HOST}/{db_settings.MYSQL_DATABASE}"
-
-# Create SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
-
-# Create SessionLocal class
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create Base class
-Base = declarative_base()
-
-# Dependency to get database session
-
-
-def get_db():
-    db = SessionLocal()
+def create_admin_user():
+    """Create admin user if not exists (fallback if not in migration)"""
+    conn = None
     try:
-        yield db
-    except Exception as e:
-        print(f"Database session error: {str(e)}")
-        db.rollback()
-        raise e
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Check if admin exists
+        cursor.execute("SELECT * FROM users WHERE role = 'admin'")
+        admin_exists = cursor.fetchone()
+
+        if not admin_exists:
+            admin_email = os.getenv("ADMIN_EMAIL")
+            admin_password = os.getenv("ADMIN_PASSWORD")
+
+            if admin_email and admin_password:
+                from auth import hash_password
+
+                # Hash password
+                hashed_password = hash_password(admin_password)
+
+                # Insert admin user with new structure
+                sql = """
+                    INSERT INTO users (last_name, first_name, email, password, birth_date, city, postal_code, role) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """
+                values = ("Goat", "Loïse", admin_email, hashed_password,
+                          "1990-01-01", "Admin City", "00000", "admin")
+                cursor.execute(sql, values)
+                conn.commit()
+                print(f"Admin user created with email: {admin_email}")
+
+    except Error as err:
+        print(f"Error creating admin user: {err}")
     finally:
-        db.close()
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()

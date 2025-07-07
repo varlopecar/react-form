@@ -47,7 +47,7 @@ services:
     volumes:
       - ./backend:/backend
     working_dir: /backend
-    command: python start.py
+    command: uvicorn app:app --host 0.0.0.0 --port 8000
     container_name: fastapi-server
     ports:
       - "8000:8000"

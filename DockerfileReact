@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Install production dependencies
-RUN pnpm install --frozen-lockfile --network-timeout 100000
+RUN pnpm install
 
 # Copy source code
 COPY . .
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm build
 
 # Install serve to host static files
-RUN pnpm add -g serve
+RUN npm install -g serve
 
 # Expose port 3000
 EXPOSE 3000
