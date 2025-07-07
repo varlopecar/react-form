@@ -198,8 +198,6 @@ export class ApiService {
       },
     });
   }
-
-
 }
 
 // Use mock service for frontend testing (no API calls)
@@ -217,12 +215,10 @@ const createApiService = () => {
       login: mockApiService.login.bind(mockApiService),
       getUsers: mockApiService.getUsersWithoutToken.bind(mockApiService),
       deleteUser: mockApiService.deleteUserWithoutToken.bind(mockApiService),
-
       getBlogPosts: mockApiService.getBlogPosts.bind(mockApiService),
       createBlogPost: mockApiService.createBlogPost.bind(mockApiService),
       deleteBlogPost: mockApiService.deleteBlogPost.bind(mockApiService),
       updateBlogPost: mockApiService.updateBlogPost.bind(mockApiService),
-      testConnection: mockApiService.testConnection.bind(mockApiService),
     };
   }
   return new ApiService();
