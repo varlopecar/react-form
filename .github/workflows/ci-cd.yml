@@ -89,7 +89,7 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
 
       - name: Start Docker environment
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
         working-directory: ./
 
       - name: Wait for services to be ready
@@ -127,7 +127,7 @@ jobs:
 
       - name: Stop services
         if: always()
-        run: docker-compose down
+        run: docker compose down
 
   deploy_pages:
     needs: build_test
@@ -135,6 +135,9 @@ jobs:
     permissions:
       pages: write
       id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -177,6 +180,7 @@ jobs:
           path: dist
 
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
 
   deploy_npm:
@@ -219,10 +223,13 @@ jobs:
           PKG_VERSION=$(node -p "require('./package.json').version")
           if npm view "$PKG_NAME@$PKG_VERSION" > /dev/null 2>&1; then
             echo "Version $PKG_VERSION already exists on NPM. Skipping publish."
-            exit 1
+            exit 0
+          else
+            echo "Version $PKG_VERSION is not published yet. Proceeding with publish."
           fi
 
       - name: Publish to NPM
+        if: success()
         run: npm publish
         working-directory: ./
         env:
