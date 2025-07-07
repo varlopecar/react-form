@@ -26,6 +26,12 @@ declare global {
        * @example cy.clearDatabase()
        */
       clearDatabase(): Chainable<void>;
+
+      /**
+       * Custom command to register a user
+       * @example cy.registerUser(userData)
+       */
+      registerUser(userData: any): Chainable<void>;
     }
   }
 }
@@ -86,4 +92,22 @@ Cypress.Commands.add("clearDatabase", () => {
   // This command can be used to reset the database state between tests
   // For now, we'll just wait a bit to ensure clean state
   cy.wait(500);
+});
+
+Cypress.Commands.add("registerUser", (userData: any) => {
+  cy.visit("/");
+
+  // Fill in the registration form
+  cy.get("#firstName").type(userData.firstName);
+  cy.get("#lastName").type(userData.lastName);
+  cy.get("#email").type(userData.email);
+  cy.get("#birthDate").type(userData.birthDate);
+  cy.get("#city").type(userData.city);
+  cy.get("#postalCode").type(userData.postalCode);
+
+  // Submit the form
+  cy.get("form").submit();
+
+  // Wait for success message
+  cy.contains("Inscription réussie !").should("be.visible");
 });

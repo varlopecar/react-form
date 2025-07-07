@@ -18,7 +18,8 @@ import {
     People as PeopleIcon,
     Dashboard as DashboardIcon,
     Logout as LogoutIcon,
-    Menu as MenuIcon
+    Menu as MenuIcon,
+    Description as DescriptionIcon
 } from '@mui/icons-material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { User } from '../services/api';
@@ -42,6 +43,7 @@ export default function Sidebar({ currentUser, onLogout, open, onToggle }: Sideb
         { text: 'Articles', icon: <ArticleIcon />, path: '/posts' },
         { text: 'Utilisateurs', icon: <PeopleIcon />, path: '/users' },
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+        { text: 'Documentation', icon: <DescriptionIcon />, path: '/docs' },
     ];
 
     const drawerContent = (

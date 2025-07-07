@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
                         <Typography variant="body2">
                             <strong>Demo Credentials:</strong><br />
                             Email: admin@example.com<br />
-                            Password: password123
+                            Password: admin123
                         </Typography>
                     </Alert>
                 </Paper>

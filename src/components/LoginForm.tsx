@@ -45,6 +45,7 @@ export const LoginForm = ({ onLogin }: Props) => {
                 Connexion Admin
             </Typography>
             <TextField
+                id="email"
                 label="Email"
                 type="email"
                 {...register("email")}
@@ -53,6 +54,7 @@ export const LoginForm = ({ onLogin }: Props) => {
                 fullWidth
             />
             <TextField
+                id="password"
                 label="Mot de passe"
                 type="password"
                 {...register("password")}

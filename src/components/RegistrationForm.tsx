@@ -95,6 +95,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 Formulaire d'inscription
             </Typography>
             <TextField
+                id="firstName"
                 label="Prénom"
                 {...register("firstName")}
                 error={!!errors.firstName}
@@ -102,6 +103,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 fullWidth
             />
             <TextField
+                id="lastName"
                 label="Nom"
                 {...register("lastName")}
                 error={!!errors.lastName}
@@ -109,6 +111,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 fullWidth
             />
             <TextField
+                id="email"
                 label="Email"
                 type="email"
                 {...register("email")}
@@ -117,6 +120,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 fullWidth
             />
             <TextField
+                id="birthDate"
                 label="Date de naissance"
                 type="date"
                 {...register("birthDate", { valueAsDate: true })}
@@ -126,6 +130,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 InputLabelProps={{ shrink: true }}
             />
             <TextField
+                id="city"
                 label="Ville"
                 {...register("city")}
                 error={!!errors.city}
@@ -133,6 +138,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 fullWidth
             />
             <TextField
+                id="postalCode"
                 label="Code postal"
                 {...register("postalCode")}
                 error={!!errors.postalCode}

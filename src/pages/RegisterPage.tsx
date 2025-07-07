@@ -13,7 +13,7 @@ export default function RegisterPage({ onSubmit }: RegisterPageProps) {
         <Box data-testid="register-page" sx={{ minHeight: '100vh', bgcolor: 'background.default', py: 8 }}>
             <Paper elevation={3} sx={{ maxWidth: 400, mx: 'auto', p: 4 }}>
                 <Typography variant="h4" align="center" gutterBottom>
-                    Register
+                    Formulaire d'Inscription
                 </Typography>
                 <RegistrationForm onSubmit={onSubmit} />
                 <Box mt={2} textAlign="center">

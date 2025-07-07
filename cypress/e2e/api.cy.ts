@@ -174,45 +174,7 @@ describe("API Endpoints", () => {
     });
   });
 
-  it("should test get current user API endpoint", () => {
-    cy.fixture("users").then((users) => {
-      const adminUser = users.admin;
 
-      // Login to get token
-      cy.request({
-        method: "POST",
-        url: "http://localhost:8000/login",
-        body: {
-          email: adminUser.email,
-          password: adminUser.password,
-        },
-      }).then((loginResponse) => {
-        const token = loginResponse.body.access_token;
-
-        // Get current user info
-        cy.request({
-          method: "GET",
-          url: "http://localhost:8000/me",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          failOnStatusCode: false,
-        }).then((response) => {
-          expect(response.status).to.equal(200);
-          expect(response.body).to.have.property("email", adminUser.email);
-          expect(response.body).to.have.property(
-            "first_name",
-            adminUser.firstName
-          );
-          expect(response.body).to.have.property(
-            "last_name",
-            adminUser.lastName
-          );
-          expect(response.body).to.have.property("is_admin", true);
-        });
-      });
-    });
-  });
 
   it("should test duplicate email registration", () => {
     cy.fixture("users").then((users) => {

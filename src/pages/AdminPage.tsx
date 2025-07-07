@@ -144,7 +144,7 @@ export default function AdminPage() {
         return (
             <Container maxWidth="sm" sx={{ mt: 8 }}>
                 <Typography variant="h4" component="h1" gutterBottom align="center">
-                    Access Denied
+                    Accès non autorisé
                 </Typography>
                 <Typography variant="body1" align="center">
                     Please log in to access the admin panel.
@@ -190,7 +190,7 @@ export default function AdminPage() {
 
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Typography variant="h3" component="h1" gutterBottom>
-                    User Management
+                    Panel d'Administration
                 </Typography>
 
                 {/* Search Bar */}

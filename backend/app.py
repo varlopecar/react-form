@@ -11,7 +11,7 @@ app = FastAPI(title="User Management API", version="1.0.0")
 
 
 # Get CORS origins from environment variable or use defaults
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api.vercel.app")
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api-six-indol.vercel.app/")
 cors_origins_list = [origin.strip() for origin in cors_origins.split(",")]
 
 app.add_middleware(
@@ -62,7 +62,19 @@ def register_user(user_data: UserRegister):
         cursor.execute(sql, values)
         conn.commit()
         
-        return {"message": "Inscription réussie !"}
+        # Get the inserted user data
+        user_id = cursor.lastrowid
+        cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+        new_user = cursor.fetchone()
+        
+        return {
+            "message": "Inscription réussie !",
+            "id": new_user['id'],
+            "email": new_user['email'],
+            "first_name": new_user['first_name'],
+            "last_name": new_user['last_name'],
+            "is_admin": new_user['role'] == 'admin'
+        }
         
     except mysql.connector.Error as err:
         raise HTTPException(status_code=500, detail=str(err))
@@ -202,7 +214,7 @@ def delete_user(user_id: int, current_admin: dict = Depends(get_current_admin)):
 
 @app.get("/")
 def read_root():
-    return {"message": "User Management API is running"}
+    return {"message": "React Form API"}
 
 @app.get("/health")
 def health_check():
