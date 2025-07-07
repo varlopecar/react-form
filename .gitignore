@@ -31,3 +31,4 @@ public/docs
 
 backend/.venv/
 backend/__pycache__/
+.vercel

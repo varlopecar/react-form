@@ -61,6 +61,8 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
+        credentials: "include",
+        mode: "cors",
       });
       expect(result).toEqual(mockUser);
     });
@@ -125,6 +127,8 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
+        credentials: "include",
+        mode: "cors",
       });
       expect(result).toEqual(mockResponse);
     });
@@ -176,6 +180,8 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer user@example.com",
         },
+        credentials: "include",
+        mode: "cors",
       });
       expect(result).toEqual(mockUsers);
     });
@@ -204,12 +210,12 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer admin@example.com",
         },
+        credentials: "include",
+        mode: "cors",
       });
       expect(result).toEqual(mockResponse);
     });
   });
-
-
 
   describe("error handling", () => {
     it("should handle network errors", async () => {

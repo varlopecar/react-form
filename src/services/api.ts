@@ -96,7 +96,7 @@ export class ApiService {
       console.log("📡 API Response:", {
         status: response.status,
         statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
+        headers: response.headers ? Object.fromEntries(response.headers.entries()) : {},
         url: response.url,
       });
 
