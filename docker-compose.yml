@@ -1,92 +1,83 @@
+# Common variables
 x-common-variables: &common-variables
-  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
-  MYSQL_DATABASE: ${MYSQL_DATABASE:-react_form_db}
-  MYSQL_USER: ${MYSQL_USER:-react_user}
-  MYSQL_PASSWORD: ${MYSQL_PASSWORD:-react_password}
-  MYSQL_HOST: ${MYSQL_HOST:-mysql}
+  MYSQL_HOST: ${MYSQL_HOST}
+  MYSQL_DATABASE: ${MYSQL_DATABASE}
+  MYSQL_USER: ${MYSQL_USER}
+  MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+# Specific variables for FastAPI
+x-fastapi-variables: &fastapi-variables
+  <<: *common-variables
+  PORT: ${PORT}
+  ADMIN_EMAIL: ${ADMIN_EMAIL}
+  ADMIN_PASSWORD: ${ADMIN_PASSWORD}
 
 services:
-  # MySQL Database
-  mysql:
+  # MySQL database
+  mysql-db:
     image: mysql:8.2
-    container_name: react-form-mysql
-    restart: unless-stopped
+    restart: always
     environment:
       <<: *common-variables
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - react-form-network
+      - ./sqlfiles/:/docker-entrypoint-initdb.d/
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-      interval: 10s
-      start_period: 30s
+      test: mysqladmin ping -h localhost
+    networks:
+      - app-network
 
   # Adminer for database management
   adminer:
-    image: adminer:latest
-    container_name: react-form-adminer
-    restart: unless-stopped
+    image: adminer
+    restart: always
     ports:
       - "8080:8080"
-    depends_on:
-      mysql:
-        condition: service_healthy
     networks:
-      - react-form-network
+      - app-network
 
-  # FastAPI Backend
+  # FastAPI server
   backend:
+    restart: on-failure
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: react-form-backend
-    restart: unless-stopped
+    volumes:
+      - ./backend:/backend
+    working_dir: /backend
+    command: python start.py
+    container_name: fastapi-server
     ports:
       - "8000:8000"
     environment:
-      <<: *common-variables
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-loise.fenoll@ynov.com}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-PvdrTAzTeR247sDnAZBr}
-      ENVIRONMENT: development
+      <<: *fastapi-variables
     depends_on:
-      mysql:
+      mysql-db:
         condition: service_healthy
     networks:
-      - react-form-network
-    volumes:
-      - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - app-network
 
-  # React Frontend
+  # Front-end React
   frontend:
+    platform: linux/amd64
+    restart: on-failure
     build:
       context: .
-      dockerfile: Dockerfile.frontend.dev
-    container_name: react-form-frontend
-    restart: unless-stopped
+      dockerfile: DockerfileReact
+    container_name: react-app
     ports:
       - "3000:3000"
     environment:
-      <<: *common-variables
-      VITE_API_URL: http://localhost:8000
-      VITE_API_BASE_URL: http://localhost:8000
+      - VITE_REACT_APP_API_URL=http://localhost:8000
+      - VITE_BASE_PATH=/
     depends_on:
-      backend:
-        condition: service_started
+      - backend
     networks:
-      - react-form-network
-    volumes:
-      - .:/app
-      - /app/node_modules
+      - app-network
 
-volumes:
-  mysql_data:
-
+# Network for services
 networks:
-  react-form-network:
+  app-network:
     driver: bridge

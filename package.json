@@ -12,7 +12,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "postbuild": "node scripts/setup-runtime-config.js",
     "predeploy": "vite build",
     "deploy": "gh-pages -d dist",
     "lint": "eslint .",
@@ -21,9 +20,7 @@
     "test:unit": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "test:integration": "node scripts/test-integration.js",
     "doc": "jsdoc --readme ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
-    "build-npm-ci": "NODE_ENV=production && rm -rf dist && mkdir dist && npx babel src --out-dir dist --copy-files",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "e2e": "cypress run",

@@ -1,167 +1,153 @@
 # React Form Project - Full Stack Application
 
-[![Build and Test React App](https://github.com/varlopecar/react-form/actions/workflows/ci_cd.yml/badge.svg)](https://github.com/varlopecar/react-form/actions/workflows/ci_cd.yml)
+[![Build and Test React App](https://github.com/varlopecar/react-form/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/varlopecar/react-form/actions/workflows/ci-cd.yml)
 [![codecov](https://codecov.io/gh/varlopecar/react-form/branch/main/graph/badge.svg)](https://app.codecov.io/gh/varlopecar/react-form)
-[![npm version](https://badge.fury.io/js/@varlopecar%2Fci-cd.svg)](https://badge.fury.io/js/@varlopecar%2Fci-cd)
-
-## 👥 Équipe de Développement
-
-**Groupe de 2 étudiants :**
-
-- **Varlopecar** - [GitHub: @varlopecar](https://github.com/varlopecar)
-- **[Nom du deuxième étudiant]** - [GitHub: @username]
-
-### 📋 Répartition des Tâches
-
-| Tâche                                             | Responsable | Statut     |
-| ------------------------------------------------- | ----------- | ---------- |
-| Architecture Docker (MongoDB/Node.js)             | Varlopecar  | ✅ Terminé |
-| Architecture Docker (MySQL/Python/React/Adminer)  | Varlopecar  | ✅ Terminé |
-| Frontend React avec formulaire et base de données | Varlopecar  | ✅ Terminé |
-| API Node.js avec MongoDB pour les posts           | Varlopecar  | ✅ Terminé |
-| Gestion des utilisateurs avec rôles admin         | Varlopecar  | ✅ Terminé |
-| Menu latéral et navigation                        | Varlopecar  | ✅ Terminé |
-| Tests unitaires, intégration et E2E               | Varlopecar  | ✅ Terminé |
-| Configuration Terraform (Docker)                  | Varlopecar  | ✅ Terminé |
-| Configuration Terraform (Scalingo)                | Varlopecar  | ✅ Terminé |
-| Pipelines GitHub Actions                          | Varlopecar  | ✅ Terminé |
-| Documentation complète                            | Varlopecar  | ✅ Terminé |
-
-## 🏗️ Architecture
-
-Ce projet implémente une architecture dual API :
-
-1. **Python FastAPI + MySQL** : Gestion des utilisateurs et authentification
-2. **Node.js + MongoDB** : Posts de blog et gestion de contenu
-3. **React Frontend** : Interface utilisateur avec Material-UI et menu latéral
-
-## ✨ Fonctionnalités
-
-### Gestion des Utilisateurs (Python FastAPI + MySQL)
-
-- **Inscription Utilisateur** : Validation complète avec schémas Zod
-- **Authentification** : Connexion/déconnexion avec tokens JWT
-- **Gestion des Utilisateurs** :
-  - Affichage de la liste des utilisateurs avec informations réduites
-  - Les admins peuvent voir les informations privées des utilisateurs
-  - Les admins peuvent supprimer les utilisateurs non-admin
-  - Contrôle d'accès basé sur les rôles
-
-### Système de Blog (Node.js + MongoDB)
-
-- **Posts de Blog** : Affichage des posts sur la page d'accueil
-- **Gestion de Contenu** : Création, lecture, modification et suppression de posts
-- **Mise à jour en temps réel** : Chargement dynamique du contenu
-
-### Frontend
-
-- **Menu Latéral** : Navigation complète avec sidebar responsive
-- **Validation de Formulaire** : Validation complète avec schémas Zod
-- **Expérience Utilisateur** :
-  - Bouton de soumission désactivé jusqu'à ce que tous les champs soient remplis
-  - Messages d'erreur affichés sous chaque champ invalide
-  - Notifications toast pour succès et échec
-  - Design responsive avec Material-UI
-- **Navigation** : Menu latéral avec éléments basés sur les rôles
-- **Règles de Validation** :
-  - Vérification de l'âge (18+ ans)
-  - Format de code postal français
-  - Validation des noms (permettant accents, tirets, espaces)
-  - Validation d'email
-- **Tests** : Couverture de tests complète avec tests unitaires et d'intégration
-- **Documentation** : Documentation auto-générée avec JSDoc
-- **Pipeline CI/CD** : Processus automatisé de build, test et déploiement
 
 ## 🚀 Démo en Ligne
 
 Visitez la démo en ligne : [https://varlopecar.github.io/react-form/](https://varlopecar.github.io/react-form/)
 
-## 🔧 Variables d'Environnement
+## 🌟 Fonctionnalités Clés
 
-Créez un fichier `.env` dans le répertoire racine :
+- **Formulaire d'inscription complet** avec validation en temps réel
+- **Backend RESTful** pour la gestion des utilisateurs (création, lecture, suppression)
+- **Authentification administrateur** sécurisée avec JWT
+- **Base de données MySQL** persistante
+- **Tests unitaires, d'intégration et E2E** pour garantir la qualité du code
+- **Pipeline CI/CD automatisée** pour les tests, le build, et les déploiements
+- **Déploiement du frontend** sur GitHub Pages et du **backend** sur Vercel
+
+## 🛠️ Stack Technique
+
+| Domaine             | Outil                                                                                                                             | Rôle                                  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **Frontend**        | [**React**](https://react.dev/) / [**Vite**](https://vitejs.dev/)                                                                 | Interface utilisateur et build        |
+| **Backend**         | [**FastAPI**](https://fastapi.tiangolo.com/)                                                                                      | API RESTful en Python                 |
+| **Base de Données** | [**MySQL**](https://www.mysql.com/)                                                                                               | Stockage des données des utilisateurs |
+| **Tests**           | [**Vitest**](https://vitest.dev/) / [**Cypress**](https://www.cypress.io/)                                                        | Tests unitaires, intégration et E2E   |
+| **CI/CD**           | [**GitHub Actions**](https://github.com/features/actions) / [**Docker**](https://www.docker.com/)                                 | Automatisation et conteneurisation    |
+| **Hébergement**     | [**GitHub Pages**](https://pages.github.com/) / [**Vercel**](https://vercel.com/) / [**AlwaysData**](https://www.alwaysdata.com/) | Déploiement Front, Back et BDD        |
+| **Qualité**         | [**ESLint**](https://eslint.org/) / [**Codecov**](https://about.codecov.io/)                                                      | Linter et couverture de tests         |
+
+## 🚀 Démarrage Rapide
+
+### Prérequis
+
+- Node.js (v20.x recommandée)
+- Docker et Docker Compose
+
+### 1. Installation (sans Docker)
+
+Pour lancer uniquement le frontend en local (connecté à l'API de production).
 
 ```bash
-# API de Gestion des Utilisateurs (Python FastAPI)
-VITE_API_URL=http://localhost:8000
-
-# API de Blog (Node.js)
-VITE_BLOG_API_URL=http://localhost:3001
-
-# Environnement
-NODE_ENV=development
-```
-
-## 📦 Installation
-
-```bash
-# Cloner le repository
+# Cloner le projet
 git clone https://github.com/varlopecar/react-form.git
+cd react-form
 
 # Installer les dépendances
 pnpm install
 
-# Démarrer le serveur de développement
+# Lancer le serveur de développement
 pnpm dev
-
-# Lancer les tests
-pnpm test
-
-# Générer le rapport de couverture
-pnpm coverage
-
-# Générer la documentation
-pnpm doc
-
-# Build pour la production
-pnpm build
 ```
 
-## 🐳 Configuration Docker
+### 2. Lancer l'environnement complet avec Docker (Recommandé)
 
-### API de Gestion des Utilisateurs (Python FastAPI + MySQL)
+Cette méthode lance le frontend, le backend et la base de données dans des conteneurs isolés.
+
+**a. Créez un fichier `.env`** à la racine en vous basant sur `env.example` :
 
 ```bash
-# Démarrer les services de gestion des utilisateurs
-cd backend
-docker-compose up -d
+# Base de données MySQL (pour Docker)
+MYSQL_DATABASE=react_form
+MYSQL_USER=user
+MYSQL_PASSWORD=password
+MYSQL_ROOT_PASSWORD=root
+MYSQL_HOST=mysql
 
-# Cela démarrera :
-# - Base de données MySQL
-# - Backend FastAPI
-# - Adminer (gestion de base de données)
+# Configuration FastAPI
+PORT=8000
+
+# Compte administrateur injecté dans la BDD de test
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
+
+# JWT Secret
+JWT_SECRET=your-secret-key-here
+
+# Frontend API URL
+VITE_API_URL=http://localhost:8000
 ```
 
-### API de Blog (Node.js + MongoDB)
+**b. Lancez les services avec Docker Compose :**
 
 ```bash
-# Démarrer l'API de blog (repository séparé)
-cd ../express-mongodb-app
-docker-compose up -d
-
-# Cela démarrera :
-# - Base de données MongoDB
-# - Serveur API Node.js
+docker-compose up --build
 ```
 
-### Architecture Docker Complète
+- Le frontend sera accessible sur `http://localhost:3000`
+- Le backend sur `http://localhost:8000`
+- La base de données est gérable via Adminer sur `http://localhost:8080`
+
+## 🧪 Tests
+
+- **Lancer les tests unitaires et d'intégration :**
+
+  ```bash
+  pnpm run test
+  ```
+
+- **Générer le rapport de couverture :**
+
+  ```bash
+  pnpm run coverage
+  ```
+
+  Le rapport est visible dans le dossier `coverage/`
+
+- **Lancer les tests End-to-End (E2E) avec Cypress :** _(Assurez-vous que l'environnement Docker est lancé)_
+
+  ```bash
+  # Lancer en mode console
+  pnpm run cypress:run
+
+  # Ouvrir l'interface graphique de Cypress
+  pnpm run cypress:open
+  ```
+
+## 🔄 Pipeline CI/CD
+
+La pipeline GitHub Actions automatise l'ensemble du cycle de vie de l'application.
+
+```mermaid
+graph TD
+    A[Start: Push/PR sur main] --> B{build_test};
+
+    B --> C{docker_and_e2e};
+    B --> D{deploy_pages};
+    B --> E{deploy_backend_vercel};
+
+    subgraph "Phase 1: Build & Tests Unitaires"
+        B["Job: build_test<br/>(Node.js 20.x)<br/>- pnpm ci<br/>- vitest coverage<br/>- jsdoc<br/>- vite build"]
+    end
+
+    subgraph "Phase 2: Tests E2E & Déploiements"
+        C["Job: docker_and_e2e<br/>- docker-compose up<br/>- cypress run"]
+        D["Job: deploy_pages<br/>Déployer sur GitHub Pages"]
+        E["Job: deploy_backend_vercel<br/>Déployer sur Vercel"]
+    end
+```
+
+## 📚 Documentation
+
+La documentation technique des composants React est générée avec JSDoc.
 
 ```bash
-# Démarrer toute l'architecture avec Terraform
-cd ../terraform-architecture
-terraform init
-terraform plan -var="environment=docker"
-terraform apply -var="environment=docker"
+pnpm run doc
 ```
 
-## 🌐 Déploiement Scalingo
-
-```bash
-# Déployer sur Scalingo avec Terraform
-cd ../terraform-architecture
-terraform init
-terraform plan -var="environment=scalingo" -var="scalingo_token=VOTRE_TOKEN"
-terraform apply -var="environment=scalingo" -var="scalingo_token=VOTRE_TOKEN"
-```
+Le résultat est disponible dans le dossier `public/docs`.
 
 ## 📡 Endpoints API
 
@@ -172,166 +158,60 @@ terraform apply -var="environment=scalingo" -var="scalingo_token=VOTRE_TOKEN"
 - `GET /users` - Obtenir tous les utilisateurs (admin seulement)
 - `DELETE /users/{id}` - Supprimer un utilisateur (admin seulement)
 - `GET /me` - Obtenir les informations de l'utilisateur actuel
-
-### API de Blog (Node.js)
-
-- `GET /posts` - Obtenir tous les posts de blog
-- `POST /posts` - Créer un nouveau post de blog
-- `PUT /posts/{id}` - Modifier un post de blog
-- `DELETE /posts/{id}` - Supprimer un post de blog
+- `GET /health` - Vérification de santé de l'API
 
 ## 👤 Rôles Utilisateurs
 
 ### Utilisateurs Réguliers
 
 - Peuvent s'inscrire et se connecter
-- Peuvent voir la page d'accueil avec les posts de blog
-- Peuvent voir la liste des utilisateurs avec informations réduites (nom, email, statut admin seulement)
+- Peuvent voir la page d'accueil
+- Peuvent voir la liste des utilisateurs avec informations réduites
 
 ### Utilisateurs Admin
 
 - Toutes les permissions des utilisateurs réguliers
-- Peuvent voir les informations complètes des utilisateurs (y compris les données privées)
+- Peuvent voir les informations complètes des utilisateurs
 - Peuvent supprimer les utilisateurs non-admin
-- Peuvent gérer les posts de blog (créer, modifier, supprimer)
 
-## 🧪 Tests
-
-### Tests Unitaires
+## 🐳 Commandes Docker
 
 ```bash
-# Lancer les tests unitaires
-pnpm test:unit
+# Démarrer les services
+pnpm run docker:up
 
-# Lancer les tests avec interface graphique
-pnpm test:ui
+# Arrêter les services
+pnpm run docker:down
 
-# Générer la couverture de code
-pnpm coverage
+# Reconstruire les images
+pnpm run docker:build
+
+# Voir les logs
+pnpm run docker:logs
 ```
 
-### Tests d'Intégration
+## 📦 Scripts Disponibles
 
 ```bash
-# Lancer les tests d'intégration
-pnpm test:integration
+# Développement
+pnpm dev          # Lancer le serveur de développement
+pnpm build        # Build pour la production
+pnpm preview      # Prévisualiser le build
+
+# Tests
+pnpm test         # Lancer les tests
+pnpm coverage     # Générer le rapport de couverture
+pnpm cypress:run  # Tests E2E en mode console
+pnpm cypress:open # Ouvrir Cypress UI
+
+# Qualité
+pnpm lint         # Linter le code
+pnpm doc          # Générer la documentation
+
+# Déploiement
+pnpm deploy       # Déployer sur GitHub Pages
 ```
 
-### Tests End-to-End
+## ✍️ Auteur
 
-```bash
-# Lancer les tests E2E avec Cypress
-pnpm e2e
-
-# Ouvrir Cypress en mode interactif
-pnpm cypress:open
-```
-
-## 🔄 Pipeline CI/CD
-
-Ce projet utilise GitHub Actions pour l'intégration et le déploiement continus :
-
-1. **Build et Test** : S'exécute sur chaque push et pull request
-
-   - Installe les dépendances
-   - Lance les tests avec couverture
-   - Génère la documentation
-   - Build le projet
-
-2. **Déploiement GitHub Pages** : Déploie le site de démo
-
-   - Build le projet
-   - Déploie sur GitHub Pages
-
-3. **Intégration Docker** :
-
-   - Build et teste les conteneurs Docker
-   - Lance les tests d'intégration
-
-4. **Déploiement Terraform** :
-
-   - Configure l'environnement Docker
-   - Déploie sur Scalingo
-
-5. **Tests de Sécurité** :
-   - Scan de vulnérabilités avec Trivy
-   - Tests de performance avec Lighthouse
-
-## 📁 Structure du Projet
-
-```
-react-form/
-├── src/
-│   ├── components/          # Composants React
-│   │   ├── Sidebar.tsx     # Menu latéral
-│   │   └── Navigation.tsx  # Navigation principale
-│   ├── pages/              # Composants de pages
-│   │   ├── HomePage.tsx    # Page d'accueil avec blog
-│   │   ├── PostsPage.tsx   # Gestion des posts
-│   │   ├── UsersPage.tsx   # Gestion des utilisateurs
-│   │   └── DashboardPage.tsx
-│   ├── services/           # Services API
-│   ├── schemas/            # Schémas de validation
-│   └── tests/              # Fichiers de test
-├── backend/                # Backend Python FastAPI
-│   ├── main.py            # Application FastAPI
-│   ├── models.py          # Modèles de base de données
-│   ├── schemas.py         # Schémas Pydantic
-│   └── docker-compose.yml # Configuration Docker
-├── cypress/               # Tests E2E
-├── scripts/               # Scripts de build et déploiement
-└── docs/                  # Documentation
-```
-
-## 📚 Documentation
-
-La documentation est disponible directement depuis l'application en cliquant sur le lien "Documentation", ou vous pouvez y accéder à :
-[https://varlopecar.github.io/react-form/docs/](https://varlopecar.github.io/react-form/docs/)
-
-## 🔐 Sécurité
-
-- Authentification JWT sécurisée
-- Validation des données côté client et serveur
-- Contrôle d'accès basé sur les rôles
-- Scan de vulnérabilités automatisé
-- Variables d'environnement sécurisées
-
-## 📊 Métriques
-
-- **Couverture de Tests** : >90%
-- **Temps de Build** : <5 minutes
-- **Temps de Déploiement** : <10 minutes
-- **Performance Lighthouse** : >90/100
-
-## 🤝 Contribution
-
-1. Fork le repository
-2. Créer une branche de fonctionnalité
-3. Faire vos modifications
-4. Ajouter des tests pour les nouvelles fonctionnalités
-5. S'assurer que tous les tests passent
-6. Soumettre une pull request
-
-## 📞 Support
-
-Pour des questions ou des problèmes :
-
-- **GitHub Issues** : [https://github.com/varlopecar/react-form/issues](https://github.com/varlopecar/react-form/issues)
-- **Email** : [votre-email@example.com]
-
-## 📄 Licence
-
-Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-## 🙏 Remerciements
-
-- **Material-UI** pour les composants d'interface
-- **FastAPI** pour le backend Python
-- **Express.js** pour l'API Node.js
-- **Cypress** pour les tests E2E
-- **Terraform** pour l'infrastructure as code
-- **GitHub Actions** pour l'automatisation CI/CD
-
----
-
-**Développé avec ❤️ par l'équipe de développement**
+Projet réalisé par **Varlopecar**.

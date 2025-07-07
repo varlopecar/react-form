@@ -23,21 +23,9 @@ const htmlTemplatePlugin = () => {
     transformIndexHtml: {
       order: "pre" as const,
       handler(html: string) {
-        const isDevelopment =
-          process.env.NODE_ENV === "development" ||
-          process.env.NODE_ENV === undefined;
-        const defaultApiUrl = isDevelopment
-          ? "http://localhost:8000"
-          : "https://react-form-chi-one.vercel.app";
-        
-        // In development, use the environment variable or default
-        const apiUrl = process.env.VITE_API_URL || defaultApiUrl;
-        
-        console.log(
-          "🔧 Replacing VITE_API_URL in HTML template:",
-          apiUrl,
-          `(${isDevelopment ? "development" : "production"})`
-        );
+        const apiUrl = process.env.VITE_API_URL || "http://localhost:8000";
+
+        console.log("🔧 Replacing VITE_API_URL in HTML template:", apiUrl);
         return html.replace(/%VITE_API_URL%/g, apiUrl);
       },
     },

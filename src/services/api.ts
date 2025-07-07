@@ -9,43 +9,12 @@ declare global {
   }
 }
 
-// More robust API URL configuration
+// Simple API URL configuration
 const getApiBaseUrl = (): string => {
-  // Try to get from environment variable (build-time)
-  const envUrl = import.meta.env.VITE_API_URL;
-
-  // Try to get from window.__ENV__ (runtime, if configured)
-  const runtimeUrl = window.__ENV__?.VITE_API_URL;
-
-  // Try to get from meta tag (runtime)
-  const metaUrl = document
-    .querySelector('meta[name="api-url"]')
-    ?.getAttribute("content");
-
-  // Determine if we're in production
-  const isProduction =
-    import.meta.env.PROD || window.location.hostname !== "localhost";
-
-  // Use the first available URL, with production fallback
-  const apiUrl =
-    runtimeUrl ||
-    metaUrl ||
-    envUrl ||
-    (isProduction
-      ? "https://react-form-chi-one.vercel.app"
-      : "http://localhost:8000");
-
-  // Debug logging
-  console.log("🔍 API URL Debug:", {
-    envUrl,
-    runtimeUrl,
-    metaUrl,
-    isProduction,
-    finalApiUrl: apiUrl,
-    hostname: window.location.hostname,
-    importMetaEnvProd: import.meta.env.PROD
-  });
-
+  // Use environment variable or fallback to localhost
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+  
+  console.log("🔍 API URL:", apiUrl);
   return apiUrl;
 };
 
@@ -106,14 +75,33 @@ export class ApiService {
         "Content-Type": "application/json",
         ...requestOptions.headers,
       },
+      credentials: "include", // Include credentials for CORS
+      mode: "cors", // Explicitly set CORS mode
       ...requestOptions,
     };
+
+    // Debug logging
+    console.log("🌐 API Request:", {
+      url,
+      method: config.method || "GET",
+      headers: config.headers,
+      hasBody: !!config.body,
+    });
 
     try {
       const response = await fetch(url, config);
 
+      // Debug response
+      console.log("📡 API Response:", {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        url: response.url,
+      });
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error("❌ API Error:", errorData);
         throw new Error(
           errorData.detail || `HTTP error! status: ${response.status}`
         );
@@ -121,7 +109,7 @@ export class ApiService {
 
       return await response.json();
     } catch (error) {
-      console.error("API request failed:", error);
+      console.error("💥 API request failed:", error);
       throw error;
     }
   }
