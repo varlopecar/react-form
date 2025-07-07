@@ -26,7 +26,6 @@ additional_origins = [
     "http://127.0.0.1:4173",
     "http://127.0.0.1:5000",
     "http://127.0.0.1:8000",
-    "*",  # Allow all origins in development (remove in production)
 ]
 
 # Combine all origins
@@ -34,8 +33,8 @@ all_origins = cors_origins_list + additional_origins
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for now
-    allow_credentials=False,  # Set to False when using allow_origins=["*"]
+    allow_origins=all_origins,  # Use specific origins instead of "*"
+    allow_credentials=True,  # Enable credentials for authentication
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
@@ -234,11 +233,6 @@ def delete_user(user_id: int, current_admin: dict = Depends(get_current_admin)):
 @app.get("/")
 def read_root():
     return {"message": "React Form API"}
-
-@app.options("/{full_path:path}")
-def options_handler(full_path: str):
-    """Handle OPTIONS requests for CORS preflight"""
-    return {"message": "OK"}
 
 @app.get("/health")
 def health_check():
