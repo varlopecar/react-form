@@ -60,8 +60,16 @@ describe("ApiService", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
-        credentials: "include",
+        body: JSON.stringify({
+          first_name: "Test",
+          last_name: "User",
+          email: "test@example.com",
+          birth_date: "1990-01-01",
+          city: "Paris",
+          postal_code: "75001",
+          password: "password123",
+        }),
+        credentials: "omit",
         mode: "cors",
       });
       expect(result).toEqual(mockUser);
@@ -127,7 +135,7 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
-        credentials: "include",
+        credentials: "omit",
         mode: "cors",
       });
       expect(result).toEqual(mockResponse);
@@ -180,7 +188,7 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer user@example.com",
         },
-        credentials: "include",
+        credentials: "omit",
         mode: "cors",
       });
       expect(result).toEqual(mockUsers);
@@ -210,7 +218,7 @@ describe("ApiService", () => {
           "Content-Type": "application/json",
           Authorization: "Bearer admin@example.com",
         },
-        credentials: "include",
+        credentials: "omit",
         mode: "cors",
       });
       expect(result).toEqual(mockResponse);

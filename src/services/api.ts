@@ -76,7 +76,7 @@ export class ApiService {
         "Content-Type": "application/json",
         ...requestOptions.headers,
       },
-      credentials: "include", // Include credentials for CORS
+      credentials: "omit", // Don't send credentials for cross-origin requests
       mode: "cors", // Explicitly set CORS mode
       ...requestOptions,
     };
@@ -118,9 +118,20 @@ export class ApiService {
   async registerUser(
     userData: RegistrationFormData & { password: string }
   ): Promise<User> {
+    // Transform camelCase to snake_case for backend compatibility
+    const transformedData = {
+      first_name: userData.firstName,
+      last_name: userData.lastName,
+      email: userData.email,
+      birth_date: userData.birthDate.toISOString().split('T')[0], // Convert to YYYY-MM-DD format
+      city: userData.city,
+      postal_code: userData.postalCode,
+      password: userData.password,
+    };
+
     return this.request<User>("/register", {
       method: "POST",
-      body: JSON.stringify(userData),
+      body: JSON.stringify(transformedData),
     });
   }
 

@@ -14,10 +14,28 @@ app = FastAPI(title="User Management API", version="1.0.0")
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api-six-indol.vercel.app")
 cors_origins_list = [origin.strip() for origin in cors_origins.split(",")]
 
+# Add additional common development and production origins
+additional_origins = [
+    "http://localhost:8080",
+    "http://localhost:4173",  # Vite preview
+    "http://localhost:5000",  # Flask default
+    "http://localhost:8000",  # FastAPI default
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:4173",
+    "http://127.0.0.1:5000",
+    "http://127.0.0.1:8000",
+    "*",  # Allow all origins in development (remove in production)
+]
+
+# Combine all origins
+all_origins = cors_origins_list + additional_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins_list,
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins for now
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
