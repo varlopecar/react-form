@@ -57,7 +57,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://react-form-chi-one.vercel.app' }}
         run: |
-          pnpm ci
+          pnpm install --frozen-lockfile
           pnpm run coverage
           pnpm run doc
           pnpm run build
@@ -116,7 +116,7 @@ jobs:
           version: latest
 
       - name: Install frontend dependencies
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run Cypress tests against Docker environment
         env:
@@ -161,7 +161,7 @@ jobs:
           version: latest
 
       - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build for GitHub Pages
         env:
@@ -199,7 +199,7 @@ jobs:
           version: latest
 
       - name: Install dependencies
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build npm package
         run: pnpm run build
@@ -226,4 +226,4 @@ jobs:
         run: npm publish
         working-directory: ./
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
