@@ -1,6 +1,6 @@
 {
   "name": "@varlopecar/react-form",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "GITHUB_PAGES=true tsc -b && vite build",
     "predeploy": "vite build",
     "deploy": "gh-pages -d dist",
     "lint": "eslint .",

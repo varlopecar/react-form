@@ -13,8 +13,8 @@ const isLib = process.env.BUILD_MODE === "lib";
 const isDocker = process.env.DOCKER_ENV === "true";
 // Check if we're in development
 const isDev = process.env.NODE_ENV === "development";
-// Check if we're building for web app
-const isWebBuild = process.env.BUILD_MODE === "web";
+// Check if we're building for GitHub Pages
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
 // Custom plugin for HTML template replacement
 const htmlTemplatePlugin = () => {
@@ -34,8 +34,8 @@ const htmlTemplatePlugin = () => {
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Only use the base path for GitHub Pages deployment
-  base: isLib || isDocker || isDev ? "/" : isWebBuild ? "/react-form/" : "/",
+  // Set base path for GitHub Pages deployment
+  base: isGitHubPages ? "/react-form/" : "/",
   plugins: [
     react(),
     !isLib && tailwindcss(),

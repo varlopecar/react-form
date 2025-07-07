@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/HomePage";
 import AdminPage from "./pages/AdminPage";
@@ -12,7 +12,6 @@ import NotFoundPage from "./pages/NotFoundPage";
 import { apiService } from "./services/api";
 import { RegistrationFormData } from "./schemas/registrationSchema";
 import { toast } from "react-hot-toast";
-import React from "react";
 
 // Wrapper components to handle props
 const RegisterPageWrapper = () => {
@@ -92,22 +91,6 @@ const DashboardPageWrapper = () => {
  * ```
  */
 function App() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  React.useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const redirect = params.get("redirect");
-    if (redirect) {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        navigate(decodeURIComponent(redirect), { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-    }
-  }, []); // Only run on mount
-
   return (
     <>
       <Toaster position="top-right" />

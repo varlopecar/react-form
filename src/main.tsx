@@ -7,11 +7,15 @@ import App from './App'
 
 const theme = createTheme()
 
+// Get the basename for the router
+// For GitHub Pages, we need to use the repository name as the basename
+const basename = import.meta.env.BASE_URL || '/'
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <App />
       </BrowserRouter>
     </ThemeProvider>

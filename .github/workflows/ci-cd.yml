@@ -52,6 +52,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Setup Cypress cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install dependencies and run unit/integration tests
         working-directory: ./
         env:
@@ -122,6 +130,27 @@ jobs:
         with:
           version: latest
 
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Cypress cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
@@ -170,13 +199,34 @@ jobs:
         with:
           version: latest
 
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Cypress cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build for GitHub Pages
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL || 'https://react-form-chi-one.vercel.app' }}
-        run: pnpm run build
+        run: pnpm run build:pages
 
       - name: Create .nojekyll
         run: echo > dist/.nojekyll
@@ -241,16 +291,3 @@ jobs:
         working-directory: ./
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  deploy_backend_vercel:
-    needs: build_test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy FastAPI to Vercel
-        run: npx vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-        working-directory: ./backend 
