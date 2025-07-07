@@ -67,7 +67,7 @@ class UserResponse(BaseModel):
 
 class RegisterResponse(BaseModel):
     success: bool
-    message: str
+    message: Optional[str] = None
     user: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
 
@@ -97,9 +97,7 @@ def get_connection():
             port=3306,
             host=os.getenv("MYSQL_HOST"),
             autocommit=True,
-            connect_timeout=10,
-            read_timeout=30,
-            write_timeout=30
+            connect_timeout=10
         )
         
         if connection.is_connected():
@@ -207,7 +205,7 @@ def hash_password(password: str) -> str:
         return hashed.decode('utf-8')
     except Exception as e:
         logger.error(f"Error hashing password: {e}")
-        raise HTTPException(status_code=500, detail="Password hashing failed")
+        raise Exception("Password hashing failed")
 
 def verify_password(password: str, hashed_password: str) -> bool:
     """Verify a password against its hash"""
@@ -368,7 +366,14 @@ async def register_user(user_data: UserRegister):
             )
         
         # Hash the password
-        hashed_password = hash_password(user_data.password)
+        try:
+            hashed_password = hash_password(user_data.password)
+        except Exception as e:
+            logger.error(f"Password hashing failed: {e}")
+            return RegisterResponse(
+                success=False,
+                error="Password processing failed"
+            )
         
         # Insert new user with hashed password
         sql = """
