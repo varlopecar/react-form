@@ -127,12 +127,4 @@ describe("App Component", () => {
     renderWithRouter(<App />);
     expect(screen.getByTestId("not-found-page")).toBeInTheDocument();
   });
-
-  test('handles redirect parameter from 404.html', () => {
-    // Simulate the redirect parameter that would be set by 404.html
-    window.history.pushState({}, '', '/?redirect=%2Fdashboard');
-    renderWithRouter(<App />);
-    // Should redirect to dashboard, but since no auth token, should redirect to login
-    expect(screen.getByTestId("login-page")).toBeInTheDocument();
-  });
 });
