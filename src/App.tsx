@@ -20,7 +20,12 @@ const RegisterPageWrapper = () => {
   
   const handleSubmit = async (data: RegistrationFormData) => {
     try {
-      await apiService.registerUser({ ...data, password: data.password || "" });
+      // Add a default password for new users
+      const userWithPassword = {
+        ...data,
+        password: "defaultPassword123" // In a real app, you'd generate this or let admin set it
+      };
+      await apiService.registerUser(userWithPassword);
       toast.success("Registration successful!");
       navigate("/login");
     } catch (error) {
