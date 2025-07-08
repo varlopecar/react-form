@@ -93,17 +93,10 @@ jobs:
 
       - name: Start Docker environment
         env:
-          MYSQL_DATABASE: user_registration
-          MYSQL_USER: user
-          MYSQL_PASSWORD: password
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_HOST: mysql-db
-          PORT: 8000
-          ADMIN_EMAIL: admin@example.com
-          ADMIN_PASSWORD: admin123
-          JWT_SECRET: test-secret-key-for-ci
-          VITE_API_URL: http://localhost:8000
-          CORS_ORIGINS: http://localhost:3000,http://localhost:5173,http://localhost:8080,http://127.0.0.1:3000,http://127.0.0.1:5173,http://127.0.0.1:8080
+          MYSQL_DATABASE: ${MYSQL_DATABASE}
+          MYSQL_USER: ${MYSQL_USER}
+          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         run: docker compose up -d --build
         working-directory: ./
 

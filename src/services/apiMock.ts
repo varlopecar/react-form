@@ -329,6 +329,14 @@ export class MockApiService {
     const token = localStorage.getItem("authToken") || "mock-jwt-token-1";
     return this.getCurrentUser(token);
   }
+
+  // Public users method (first names only)
+  async getPublicUsers(): Promise<{ first_name: string }[]> {
+    await delay(300);
+    return this.users.map((user) => ({
+      first_name: user.first_name,
+    }));
+  }
 }
 
 export const mockApiService = new MockApiService();

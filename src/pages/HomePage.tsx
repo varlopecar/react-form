@@ -51,9 +51,14 @@ export default function HomePage() {
         // Check if user is logged in and is admin
         const token = localStorage.getItem("authToken");
         if (token) {
+            // For demo purposes, we'll check if the token is from admin login
             // In a real app, you'd decode the JWT token to check admin status
-            // For now, we'll check if there's a token and assume admin for demo
-            setIsAdmin(true);
+            // For now, we'll assume admin only if the token looks like it's from admin login
+            // This is a simple check - in production you'd verify the token properly
+            const isAdminToken = token.includes('admin') || token.includes('mock-jwt-token-1');
+            setIsAdmin(isAdminToken);
+        } else {
+            setIsAdmin(false);
         }
     }, []);
 

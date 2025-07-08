@@ -36,7 +36,7 @@ db_pool = None
 
 # Security configuration
 security = HTTPBearer()
-MY_SECRET = os.getenv("JWT_SECRET", "dev-secret")
+MY_SECRET = os.getenv("JWT_SECRET")
 
 # Pydantic models for request/response validation
 class UserRegister(BaseModel):
@@ -530,6 +530,13 @@ async def get_users():
         # Transform users to match frontend expectations
         transformed_users = []
         for user in users:
+            # Convert created_at to string if it's a datetime object
+            created_at = user.get('created_at')
+            if created_at and hasattr(created_at, 'isoformat'):
+                created_at = created_at.isoformat()
+            elif not created_at:
+                created_at = '2024-01-01T00:00:00Z'
+            
             transformed_users.append(UserResponse(
                 id=user['id'],
                 last_name=user['last_name'],
@@ -540,7 +547,7 @@ async def get_users():
                 postal_code=user['postal_code'],
                 role=user['role'],
                 is_admin=user['role'] == 'admin',
-                created_at=user.get('created_at', '2024-01-01T00:00:00Z')
+                created_at=created_at
             ))
         
         return transformed_users

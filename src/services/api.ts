@@ -204,6 +204,15 @@ export class ApiService {
       },
     });
   }
+
+  // Fetch public users (first names only)
+  async getPublicUsers(): Promise<{ first_name: string }[]> {
+    return this.request<{ first_name: string }[]>("/public-users", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 
 // Use mock service for frontend testing (no API calls)
@@ -220,6 +229,7 @@ const createApiService = () => {
       registerUser: mockApiService.registerUser.bind(mockApiService),
       login: mockApiService.login.bind(mockApiService),
       getUsers: mockApiService.getUsersWithoutToken.bind(mockApiService),
+      getPublicUsers: mockApiService.getPublicUsers.bind(mockApiService),
       deleteUser: mockApiService.deleteUserWithoutToken.bind(mockApiService),
       getBlogPosts: mockApiService.getBlogPosts.bind(mockApiService),
       createBlogPost: mockApiService.createBlogPost.bind(mockApiService),

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
     Drawer,
     List,
@@ -37,6 +38,23 @@ export default function Sidebar({ currentUser, onLogout, open, onToggle }: Sideb
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const location = useLocation();
+    const [registeredName, setRegisteredName] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!currentUser) {
+            const reg = localStorage.getItem('userRegistration');
+            if (reg) {
+                try {
+                    const data = JSON.parse(reg);
+                    if (data.firstName && data.lastName) {
+                        setRegisteredName(`${data.firstName} ${data.lastName}`);
+                    }
+                } catch {}
+            }
+        } else {
+            setRegisteredName(null);
+        }
+    }, [currentUser]);
 
     const menuItems = [
         { text: 'Accueil', icon: <HomeIcon />, path: '/' },
@@ -55,8 +73,13 @@ export default function Sidebar({ currentUser, onLogout, open, onToggle }: Sideb
                 </Typography>
                 {currentUser && (
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        {currentUser.email}
+                        {currentUser.first_name} {currentUser.last_name} ({currentUser.email})
                         {currentUser.is_admin && ' (Admin)'}
+                    </Typography>
+                )}
+                {!currentUser && registeredName && (
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        {registeredName}
                     </Typography>
                 )}
             </Box>

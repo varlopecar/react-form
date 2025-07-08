@@ -47,8 +47,13 @@ export default function UsersSection({ isAdmin = false }: UsersSectionProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    console.log('UsersSection: isAdmin =', isAdmin);
     if (isAdmin) {
+      console.log('UsersSection: Loading full users data');
       loadUsers();
+    } else {
+      console.log('UsersSection: Loading public users data');
+      loadPublicUsers();
     }
   }, [isAdmin]);
 
@@ -76,6 +81,21 @@ export default function UsersSection({ isAdmin = false }: UsersSectionProps) {
     }
   };
 
+  const loadPublicUsers = async () => {
+    try {
+      console.log('UsersSection: Starting to load public users');
+      setLoading(true);
+      const publicUsers = await apiService.getPublicUsers();
+      console.log('UsersSection: Public users loaded:', publicUsers);
+      setUsers(publicUsers as any); // We'll handle display below
+    } catch (error) {
+      console.error('Error loading public users:', error);
+      toast.error('Error loading public users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCreateUser = async (userData: RegistrationFormData) => {
     try {
       // Add a default password for new users
@@ -86,7 +106,12 @@ export default function UsersSection({ isAdmin = false }: UsersSectionProps) {
       await apiService.registerUser(userWithPassword);
       toast.success('User created successfully!');
       setOpenUserDialog(false);
-      loadUsers();
+      // Reload the appropriate data based on user role
+      if (isAdmin) {
+        loadUsers();
+      } else {
+        loadPublicUsers();
+      }
     } catch (error) {
       console.error('Error creating user:', error);
       toast.error('Error creating user');
@@ -134,11 +159,22 @@ export default function UsersSection({ isAdmin = false }: UsersSectionProps) {
   };
 
   if (!isAdmin) {
+    if (loading) {
+      return (
+        <Container maxWidth="lg" sx={{ mt: 4, textAlign: 'center' }}>
+          <CircularProgress />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading public users...
+          </Typography>
+        </Container>
+      );
+    }
+
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            User Registration
+            Public Users
           </Typography>
           <Button
             variant="contained"
@@ -149,13 +185,24 @@ export default function UsersSection({ isAdmin = false }: UsersSectionProps) {
             Create User
           </Button>
         </Box>
-        
         <Alert severity="info" sx={{ mb: 3 }}>
           <Typography variant="body2">
             <strong>Public User Registration:</strong> Anyone can register new users. Admin login required to view and manage existing users.
           </Typography>
         </Alert>
-
+        {/* Public users list */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" gutterBottom>Registered Users (First Names Only):</Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {users.length === 0 ? (
+              <Typography variant="body2">No users found.</Typography>
+            ) : (
+              users.map((u: any, idx: number) => (
+                <Chip key={idx} label={u.first_name} color="primary" variant="outlined" />
+              ))
+            )}
+          </Box>
+        </Box>
         {/* Create User Dialog */}
         <Dialog open={openUserDialog} onClose={() => setOpenUserDialog(false)} maxWidth="md" fullWidth>
           <DialogTitle>Create New User</DialogTitle>
