@@ -35,12 +35,15 @@ describe("ApiService", () => {
         postal_code: "75001",
         is_admin: false,
         created_at: "2024-01-01T00:00:00Z",
-        updated_at: "2024-01-01T00:00:00Z",
       };
 
       (fetch as unknown as Mock).mockResolvedValueOnce({
         ok: true,
-        json: async () => mockUser,
+        json: async () => ({
+          success: true,
+          message: "Registration successful!",
+          user: mockUser,
+        }),
       });
 
       const userData: RegistrationFormData & { password: string } = {
@@ -77,9 +80,11 @@ describe("ApiService", () => {
 
     it("should handle registration errors", async () => {
       (fetch as unknown as Mock).mockResolvedValueOnce({
-        ok: false,
-        status: 400,
-        json: async () => ({ detail: "Email already registered" }),
+        ok: true,
+        json: async () => ({ 
+          success: false, 
+          error: "Email already registered" 
+        }),
       });
 
       const userData: RegistrationFormData & { password: string } = {
@@ -100,21 +105,23 @@ describe("ApiService", () => {
 
   describe("login", () => {
     it("should login successfully", async () => {
+      const mockUser = {
+        id: 1,
+        email: "user@example.com",
+        first_name: "Test",
+        last_name: "User",
+        birth_date: "1990-01-01",
+        city: "Paris",
+        postal_code: "75001",
+        is_admin: false,
+        created_at: "2024-01-01T00:00:00Z",
+      };
+
       const mockResponse = {
+        success: true,
         access_token: "user@example.com",
         token_type: "bearer",
-        user: {
-          id: 1,
-          email: "user@example.com",
-          first_name: "Test",
-          last_name: "User",
-          birth_date: "1990-01-01",
-          city: "Paris",
-          postal_code: "75001",
-          is_admin: false,
-          created_at: "2024-01-01T00:00:00Z",
-          updated_at: "2024-01-01T00:00:00Z",
-        },
+        user: mockUser,
       };
 
       (fetch as unknown as Mock).mockResolvedValueOnce({
@@ -138,14 +145,20 @@ describe("ApiService", () => {
         credentials: "omit",
         mode: "cors",
       });
-      expect(result).toEqual(mockResponse);
+      expect(result).toEqual({
+        access_token: "user@example.com",
+        token_type: "bearer",
+        user: mockUser,
+      });
     });
 
     it("should handle login errors", async () => {
       (fetch as unknown as Mock).mockResolvedValueOnce({
-        ok: false,
-        status: 401,
-        json: async () => ({ detail: "Incorrect email or password" }),
+        ok: true,
+        json: async () => ({ 
+          success: false, 
+          error: "Incorrect email or password" 
+        }),
       });
 
       const credentials = {

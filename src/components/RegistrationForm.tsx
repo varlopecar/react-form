@@ -71,13 +71,13 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
             localStorage.setItem('userRegistration', JSON.stringify(data));
 
             // Show success toast
-            toast.success("Inscription réussie !");
+            toast.success("Registration successful!");
 
             // Reset the form
             reset();
         } catch (error) {
             // Show error toast if something goes wrong
-            toast.error("Une erreur est survenue lors de l'inscription");
+            toast.error("An error occurred during registration");
             console.error("Registration error:", error);
         }
     };
@@ -86,17 +86,17 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
      * Handles form validation errors
      */
     const onError = () => {
-        toast.error("Veuillez corriger les erreurs dans le formulaire");
+        toast.error("Please correct the errors in the form");
     };
 
     return (
         <Box component="form" role="form" onSubmit={handleSubmit(onSubmitHandler, onError)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="h5" align="center" gutterBottom>
-                Formulaire d'inscription
+                Registration Form
             </Typography>
             <TextField
                 id="firstName"
-                label="Prénom"
+                label="First Name"
                 {...register("firstName")}
                 error={!!errors.firstName}
                 helperText={errors.firstName?.message}
@@ -104,7 +104,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
             />
             <TextField
                 id="lastName"
-                label="Nom"
+                label="Last Name"
                 {...register("lastName")}
                 error={!!errors.lastName}
                 helperText={errors.lastName?.message}
@@ -121,7 +121,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
             />
             <TextField
                 id="birthDate"
-                label="Date de naissance"
+                label="Birth Date"
                 type="date"
                 {...register("birthDate", { valueAsDate: true })}
                 error={!!errors.birthDate}
@@ -131,7 +131,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
             />
             <TextField
                 id="city"
-                label="Ville"
+                label="City"
                 {...register("city")}
                 error={!!errors.city}
                 helperText={errors.city?.message}
@@ -139,7 +139,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
             />
             <TextField
                 id="postalCode"
-                label="Code postal"
+                label="Postal Code"
                 {...register("postalCode")}
                 error={!!errors.postalCode}
                 helperText={errors.postalCode?.message}
@@ -153,7 +153,7 @@ export const RegistrationForm = ({ onSubmit }: Props) => {
                 fullWidth
                 sx={{ mt: 2 }}
             >
-                S'inscrire
+                Register
             </Button>
         </Box>
     );

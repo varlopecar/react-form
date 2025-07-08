@@ -26,7 +26,7 @@ const RegisterPageWrapper = () => {
       };
       await apiService.registerUser(userWithPassword);
       toast.success("Registration successful!");
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       toast.error("Registration failed");
     }
@@ -42,7 +42,7 @@ const DashboardPageWrapper = () => {
   
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    navigate("/login");
+    navigate("/");
   };
 
   // Mock user data for now - in a real app this would come from context or state

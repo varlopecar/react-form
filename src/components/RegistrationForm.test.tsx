@@ -39,7 +39,7 @@ describe("RegistrationForm", () => {
 
     it("should have the submit button disabled when fields are empty", () => {
         render(<RegistrationForm onSubmit={mockOnSubmit} />);
-        const submitButton = screen.getByText("S'inscrire");
+        const submitButton = screen.getByText("Register");
         expect(submitButton).toBeDisabled();
     });
 
@@ -47,30 +47,30 @@ describe("RegistrationForm", () => {
         render(<RegistrationForm onSubmit={mockOnSubmit} />);
 
         // Fill in some fields but leave others empty to trigger validation errors
-        fireEvent.input(screen.getByLabelText("Prénom"), {
-            target: { value: "Jean" },
+        fireEvent.input(screen.getByLabelText("First Name"), {
+            target: { value: "John" },
         });
-        fireEvent.input(screen.getByLabelText("Nom"), {
-            target: { value: "Dupont" },
+        fireEvent.input(screen.getByLabelText("Last Name"), {
+            target: { value: "Doe" },
         });
         fireEvent.input(screen.getByLabelText("Email"), {
-            target: { value: "jean@example.com" },
+            target: { value: "john@example.com" },
         });
-        fireEvent.input(screen.getByLabelText("Date de naissance"), {
+        fireEvent.input(screen.getByLabelText("Birth Date"), {
             target: { value: "1990-01-01" },
         });
-        fireEvent.input(screen.getByLabelText("Ville"), {
-            target: { value: "Paris" },
+        fireEvent.input(screen.getByLabelText("City"), {
+            target: { value: "New York" },
         });
         // Leave postal code empty or invalid
-        fireEvent.input(screen.getByLabelText("Code postal"), {
+        fireEvent.input(screen.getByLabelText("Postal Code"), {
             target: { value: "" },
         });
 
         // Wait for form to be in enabled state and then submit
         await waitFor(() => {
             // Button should be disabled due to empty postal code
-            expect(screen.getByText("S'inscrire")).toBeDisabled();
+            expect(screen.getByText("Register")).toBeDisabled();
         });
 
         // Try to submit the form directly
@@ -86,45 +86,45 @@ describe("RegistrationForm", () => {
         render(<RegistrationForm onSubmit={mockOnSubmit} />);
 
         // Fill in valid data
-        fireEvent.input(screen.getByLabelText("Prénom"), {
-            target: { value: "Jean" },
+        fireEvent.input(screen.getByLabelText("First Name"), {
+            target: { value: "John" },
         });
-        fireEvent.input(screen.getByLabelText("Nom"), {
-            target: { value: "Dupont" },
+        fireEvent.input(screen.getByLabelText("Last Name"), {
+            target: { value: "Doe" },
         });
         fireEvent.input(screen.getByLabelText("Email"), {
-            target: { value: "jean@example.com" },
+            target: { value: "john@example.com" },
         });
-        fireEvent.input(screen.getByLabelText("Date de naissance"), {
+        fireEvent.input(screen.getByLabelText("Birth Date"), {
             target: { value: "1990-01-01" },
         });
-        fireEvent.input(screen.getByLabelText("Ville"), {
-            target: { value: "Paris" },
+        fireEvent.input(screen.getByLabelText("City"), {
+            target: { value: "New York" },
         });
-        fireEvent.input(screen.getByLabelText("Code postal"), {
-            target: { value: "75001" },
+        fireEvent.input(screen.getByLabelText("Postal Code"), {
+            target: { value: "12345" },
         });
 
         // Check that button is now enabled
         await waitFor(() => {
-            expect(screen.getByText("S'inscrire")).not.toBeDisabled();
+            expect(screen.getByText("Register")).not.toBeDisabled();
         });
 
-        fireEvent.click(screen.getByText("S'inscrire"));
+        fireEvent.click(screen.getByText("Register"));
 
         await waitFor(() => {
-            expect(toast.success).toHaveBeenCalledWith("Inscription réussie !");
+            expect(toast.success).toHaveBeenCalledWith("Registration successful!");
             expect(mockOnSubmit).toHaveBeenCalled();
 
             // Verify data was saved to localStorage
             expect(localStorageMock.setItem).toHaveBeenCalled();
             const savedData = localStorageMock.setItem.mock.calls[0][1];
             expect(JSON.parse(savedData)).toEqual(expect.objectContaining({
-                firstName: "Jean",
-                lastName: "Dupont",
-                email: "jean@example.com",
-                city: "Paris",
-                postalCode: "75001",
+                firstName: "John",
+                lastName: "Doe",
+                email: "john@example.com",
+                city: "New York",
+                postalCode: "12345",
             }));
         });
     });
@@ -133,37 +133,40 @@ describe("RegistrationForm", () => {
         render(<RegistrationForm onSubmit={mockOnSubmit} />);
 
         // Fill in all fields to enable the button
-        fireEvent.input(screen.getByLabelText("Prénom"), {
-            target: { value: "Jean" },
+        fireEvent.input(screen.getByLabelText("First Name"), {
+            target: { value: "John" },
         });
-        fireEvent.input(screen.getByLabelText("Nom"), {
-            target: { value: "Dupont" },
+        fireEvent.input(screen.getByLabelText("Last Name"), {
+            target: { value: "Doe" },
         });
         fireEvent.input(screen.getByLabelText("Email"), {
-            target: { value: "jean@example.com" },
+            target: { value: "john@example.com" },
         });
-        fireEvent.input(screen.getByLabelText("Date de naissance"), {
+        fireEvent.input(screen.getByLabelText("Birth Date"), {
             target: { value: "1990-01-01" },
         });
-        fireEvent.input(screen.getByLabelText("Ville"), {
-            target: { value: "Paris" },
+        fireEvent.input(screen.getByLabelText("City"), {
+            target: { value: "New York" },
         });
 
         // Set invalid postal code
-        fireEvent.input(screen.getByLabelText("Code postal"), {
+        fireEvent.input(screen.getByLabelText("Postal Code"), {
             target: { value: "123" },
         });
 
         // Check that button is now enabled with all fields filled
         await waitFor(() => {
-            expect(screen.getByText("S'inscrire")).not.toBeDisabled();
+            expect(screen.getByText("Register")).not.toBeDisabled();
         });
 
         // Submit form
-        fireEvent.click(screen.getByText("S'inscrire"));
+        fireEvent.click(screen.getByText("Register"));
 
         await waitFor(() => {
-            expect(screen.getByText(/Le code postal doit contenir 5 chiffres/i)).toBeInTheDocument();
+            // Use a function matcher to find the error text even if it's split or wrapped
+            expect(screen.getByText((content) =>
+                content.includes("Postal code must be at least 4 characters")
+            )).toBeInTheDocument();
             expect(toast.error).toHaveBeenCalled();
         });
     });
@@ -177,33 +180,33 @@ describe("RegistrationForm", () => {
         render(<RegistrationForm onSubmit={mockErrorOnSubmit} />);
 
         // Fill in valid data
-        fireEvent.input(screen.getByLabelText("Prénom"), {
-            target: { value: "Jean" },
+        fireEvent.input(screen.getByLabelText("First Name"), {
+            target: { value: "John" },
         });
-        fireEvent.input(screen.getByLabelText("Nom"), {
-            target: { value: "Dupont" },
+        fireEvent.input(screen.getByLabelText("Last Name"), {
+            target: { value: "Doe" },
         });
         fireEvent.input(screen.getByLabelText("Email"), {
-            target: { value: "jean@example.com" },
+            target: { value: "john@example.com" },
         });
-        fireEvent.input(screen.getByLabelText("Date de naissance"), {
+        fireEvent.input(screen.getByLabelText("Birth Date"), {
             target: { value: "1990-01-01" },
         });
-        fireEvent.input(screen.getByLabelText("Ville"), {
-            target: { value: "Paris" },
+        fireEvent.input(screen.getByLabelText("City"), {
+            target: { value: "New York" },
         });
-        fireEvent.input(screen.getByLabelText("Code postal"), {
-            target: { value: "75001" },
+        fireEvent.input(screen.getByLabelText("Postal Code"), {
+            target: { value: "12345" },
         });
 
         await waitFor(() => {
-            expect(screen.getByText("S'inscrire")).not.toBeDisabled();
+            expect(screen.getByText("Register")).not.toBeDisabled();
         });
 
-        fireEvent.click(screen.getByText("S'inscrire"));
+        fireEvent.click(screen.getByText("Register"));
 
         await waitFor(() => {
-            expect(toast.error).toHaveBeenCalledWith("Une erreur est survenue lors de l'inscription");
+            expect(toast.error).toHaveBeenCalledWith("An error occurred during registration");
             expect(mockErrorOnSubmit).toHaveBeenCalled();
         });
     });

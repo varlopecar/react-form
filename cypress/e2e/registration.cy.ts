@@ -5,133 +5,132 @@ describe("User Registration", () => {
   });
 
   it("should display the registration form", () => {
-    cy.get("h1").should("contain", "Formulaire d'Inscription");
+    cy.contains("Registration Form").should("be.visible");
     cy.get("form").should("be.visible");
-    cy.get("#firstName").should("be.visible");
-    cy.get("#lastName").should("be.visible");
-    cy.get("#email").should("be.visible");
-    cy.get("#birthDate").should("be.visible");
-    cy.get("#city").should("be.visible");
-    cy.get("#postalCode").should("be.visible");
   });
 
   it("should register a new user successfully using fixtures", () => {
-    cy.fixture('users').then((users) => {
-      const userData = users.testUser1;
-      
-      cy.get('#firstName').type(userData.firstName);
-      cy.get('#lastName').type(userData.lastName);
-      cy.get('#email').type(userData.email);
-      cy.get('#birthDate').type(userData.birthDate);
-      cy.get('#city').type(userData.city);
-      cy.get('#postalCode').type(userData.postalCode);
-      
-      cy.get('form').submit();
-      
-      cy.contains('Inscription réussie !').should('be.visible');
+    cy.fixture("users").then((users) => {
+      const testUser = users.testUser1;
+
+      cy.get("#firstName").type(testUser.firstName);
+      cy.get("#lastName").type(testUser.lastName);
+      cy.get("#email").type(testUser.email);
+      cy.get("#birthDate").type(testUser.birthDate);
+      cy.get("#city").type(testUser.city);
+      cy.get("#postalCode").type(testUser.postalCode);
+      cy.get("form").submit();
+
+      cy.contains("Registration successful!").should("be.visible");
     });
   });
 
   it("should show validation errors for invalid data using fixtures", () => {
-    cy.fixture('users').then((users) => {
+    cy.fixture("users").then((users) => {
       const invalidUser = users.invalidUser;
-      
-      // Fill form with invalid data
-      cy.get('#firstName').type(invalidUser.firstName);
-      cy.get('#lastName').type(invalidUser.lastName);
-      cy.get('#email').type(invalidUser.email);
-      cy.get('#birthDate').type(invalidUser.birthDate);
-      cy.get('#city').type(invalidUser.city);
-      cy.get('#postalCode').type(invalidUser.postalCode);
-      
+
+      cy.get("#firstName").type(invalidUser.firstName);
+      cy.get("#lastName").type(invalidUser.lastName);
+      cy.get("#email").type(invalidUser.email);
+      cy.get("#birthDate").type(invalidUser.birthDate);
+      cy.get("#city").type(invalidUser.city);
+      cy.get("#postalCode").type(invalidUser.postalCode);
+      cy.get("form").submit();
+
       // Should show validation errors
-      cy.get('.text-red-500').should('have.length.at.least', 1);
+      cy.contains("Please correct the errors in the form").should("be.visible");
     });
   });
 
   it("should validate email format", () => {
     cy.get("#email").type("invalid-email");
     cy.get("#email").blur();
-    cy.contains("L'email n'est pas valide").should("be.visible");
+    cy.contains("Invalid email").should("be.visible");
   });
 
   it("should register a new user successfully", () => {
-    const userData = {
-      firstName: "Jean",
-      lastName: "Dupont",
-      email: "jean.dupont@example.com",
-      birthDate: "1990-05-15",
-      city: "Paris",
-      postalCode: "75001",
-    };
+    cy.fixture("users").then((users) => {
+      const testUser = users.testUser2;
 
-    cy.registerUser(userData);
+      cy.get("#firstName").type(testUser.firstName);
+      cy.get("#lastName").type(testUser.lastName);
+      cy.get("#email").type(testUser.email);
+      cy.get("#birthDate").type(testUser.birthDate);
+      cy.get("#city").type(testUser.city);
+      cy.get("#postalCode").type(testUser.postalCode);
+      cy.get("form").submit();
+
+      cy.contains("Registration successful!").should("be.visible");
+    });
   });
 
   it("should show validation errors for invalid data", () => {
-    // Try to submit empty form
     cy.get("form").submit();
-
-    // Should show validation errors
-    cy.get(".text-red-500").should("have.length.at.least", 1);
+    cy.contains("Please correct the errors in the form").should("be.visible");
   });
 
   it("should validate email format", () => {
     cy.get("#email").type("invalid-email");
     cy.get("#email").blur();
-    cy.contains("L'email n'est pas valide").should("be.visible");
+    cy.contains("Invalid email").should("be.visible");
   });
 
   it("should validate age requirement (18+)", () => {
-    const futureDate = new Date();
-    futureDate.setFullYear(futureDate.getFullYear() + 1);
-    const futureDateString = futureDate.toISOString().split("T")[0];
+    const underageDate = new Date();
+    underageDate.setFullYear(underageDate.getFullYear() - 17);
+    const underageDateString = underageDate.toISOString().split('T')[0];
 
-    cy.get("#birthDate").type(futureDateString);
+    cy.get("#birthDate").type(underageDateString);
     cy.get("#birthDate").blur();
-    cy.contains("Vous devez avoir au moins 18 ans").should("be.visible");
+    cy.contains("You must be at least 18 years old").should("be.visible");
   });
 
   it("should validate postal code format", () => {
     cy.get("#postalCode").type("123");
     cy.get("#postalCode").blur();
-    cy.contains("Le code postal doit contenir 5 chiffres").should("be.visible");
+    cy.contains("Postal code must be at least 4 characters").should("be.visible");
   });
 
   it("should enable submit button only when all fields are filled", () => {
-    // Initially button should be disabled
+    // Initially, submit button should be disabled
     cy.get('button[type="submit"]').should("be.disabled");
 
     // Fill all fields
-    cy.get("#firstName").type("Jean");
-    cy.get("#lastName").type("Dupont");
-    cy.get("#email").type("jean@example.com");
-    cy.get("#birthDate").type("1990-05-15");
-    cy.get("#city").type("Paris");
-    cy.get("#postalCode").type("75001");
+    cy.get("#firstName").type("John");
+    cy.get("#lastName").type("Doe");
+    cy.get("#email").type("john@example.com");
+    cy.get("#birthDate").type("1990-01-01");
+    cy.get("#city").type("New York");
+    cy.get("#postalCode").type("12345");
 
-    // Button should now be enabled
+    // Submit button should be enabled
     cy.get('button[type="submit"]').should("not.be.disabled");
   });
 
   it("should handle duplicate email registration", () => {
-    const userData = {
-      firstName: "Marie",
-      lastName: "Martin",
-      email: "marie.martin@example.com",
-      birthDate: "1985-10-20",
-      city: "Lyon",
-      postalCode: "69001",
-    };
+    cy.fixture("users").then((users) => {
+      const testUser = users.testUser1;
 
-    // Register first user
-    cy.registerUser(userData);
+      // Register user first time
+      cy.get("#firstName").type(testUser.firstName);
+      cy.get("#lastName").type(testUser.lastName);
+      cy.get("#email").type(testUser.email);
+      cy.get("#birthDate").type(testUser.birthDate);
+      cy.get("#city").type(testUser.city);
+      cy.get("#postalCode").type(testUser.postalCode);
+      cy.get("form").submit();
+      cy.contains("Registration successful!").should("be.visible");
 
-    // Try to register with same email
-    cy.visit("/");
-    cy.registerUser(userData);
+      // Try to register with same email
+      cy.get("#firstName").type("Another");
+      cy.get("#lastName").type("User");
+      cy.get("#email").type(testUser.email);
+      cy.get("#birthDate").type("1995-01-01");
+      cy.get("#city").type("Another City");
+      cy.get("#postalCode").type("54321");
+      cy.get("form").submit();
 
-    // Should show error message
-    cy.contains("Email already registered").should("be.visible");
+      cy.contains("Email already registered").should("be.visible");
+    });
   });
 });

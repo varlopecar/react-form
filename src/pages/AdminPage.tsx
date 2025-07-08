@@ -31,6 +31,7 @@ import {
     Logout as LogoutIcon,
     Home as HomeIcon
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { User, apiService } from "../services/api";
 import { toast } from "react-hot-toast";
 
@@ -42,6 +43,7 @@ export default function AdminPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         checkAuth();
@@ -84,8 +86,8 @@ export default function AdminPage() {
                 // updated_at field removed as it doesn't exist in database schema
             });
         } else {
-            // Redirect to login
-            window.location.href = "/admin/login";
+            // Redirect to login using React Router
+            navigate("/admin/login");
         }
     };
 
@@ -133,7 +135,7 @@ export default function AdminPage() {
         localStorage.removeItem("authToken");
         setIsAuthenticated(false);
         setCurrentUser(null);
-        window.location.href = "/";
+        navigate("/");
     };
 
     const formatDate = (dateString: string) => {
@@ -144,7 +146,7 @@ export default function AdminPage() {
         return (
             <Container maxWidth="sm" sx={{ mt: 8 }}>
                 <Typography variant="h4" component="h1" gutterBottom align="center">
-                    Accès non autorisé
+                    Unauthorized Access
                 </Typography>
                 <Typography variant="body1" align="center">
                     Please log in to access the admin panel.
@@ -190,7 +192,7 @@ export default function AdminPage() {
 
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Typography variant="h3" component="h1" gutterBottom>
-                    Panel d'Administration
+                    Admin Panel
                 </Typography>
 
                 {/* Search Bar */}
@@ -252,6 +254,7 @@ export default function AdminPage() {
                                                 size="small"
                                                 color="primary"
                                                 onClick={() => handleViewUser(user)}
+                                                data-testid="view-button"
                                             >
                                                 <ViewIcon />
                                             </IconButton>
@@ -260,6 +263,7 @@ export default function AdminPage() {
                                                     size="small"
                                                     color="error"
                                                     onClick={() => handleDeleteUser(user.id)}
+                                                    data-testid="delete-button"
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>

@@ -9,7 +9,7 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Click on admin login link
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
 
       // Fill in admin credentials from fixtures
       cy.get("#email").type(adminUser.email);
@@ -19,7 +19,7 @@ describe("Admin Panel", () => {
       cy.get("form").submit();
 
       // Should be redirected to admin panel
-      cy.contains("Panel d'Administration").should("be.visible");
+      cy.contains("Admin Panel").should("be.visible");
       cy.contains(`Connecté en tant que: ${adminUser.email}`).should(
         "be.visible"
       );
@@ -31,13 +31,13 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
 
       // Should see the user list
-      cy.contains("Liste des Utilisateurs").should("be.visible");
+      cy.contains("User Management").should("be.visible");
       cy.get("table").should("be.visible");
 
       // Should see at least the admin user
@@ -52,7 +52,7 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
@@ -62,7 +62,7 @@ describe("Admin Panel", () => {
         .parent()
         .parent()
         .within(() => {
-          cy.contains("Oui").should("be.visible");
+          cy.contains("Admin").should("be.visible");
         });
     });
   });
@@ -80,10 +80,10 @@ describe("Admin Panel", () => {
       cy.get("#city").type(testUser.city);
       cy.get("#postalCode").type(testUser.postalCode);
       cy.get("form").submit();
-      cy.contains("Inscription réussie !").should("be.visible");
+      cy.contains("Registration successful!").should("be.visible");
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(users.admin.email);
       cy.get("#password").type(users.admin.password);
       cy.get("form").submit();
@@ -93,14 +93,14 @@ describe("Admin Panel", () => {
         .parent()
         .parent()
         .within(() => {
-          cy.contains("Supprimer").click();
+          cy.get('[data-testid="delete-button"]').click();
         });
 
       // Confirm deletion
       cy.on("window:confirm", () => true);
 
       // Should show success message
-      cy.contains("Utilisateur supprimé avec succès").should("be.visible");
+      cy.contains("User deleted successfully").should("be.visible");
 
       // User should be removed from the list
       cy.contains(`${testUser.firstName} ${testUser.lastName}`).should(
@@ -114,7 +114,7 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
@@ -124,7 +124,7 @@ describe("Admin Panel", () => {
         .parent()
         .parent()
         .within(() => {
-          cy.contains("Supprimer").should("not.exist");
+          cy.get('[data-testid="delete-button"]').should("not.exist");
         });
     });
   });
@@ -142,10 +142,10 @@ describe("Admin Panel", () => {
       cy.get("#city").type(testUser.city);
       cy.get("#postalCode").type(testUser.postalCode);
       cy.get("form").submit();
-      cy.contains("Inscription réussie !").should("be.visible");
+      cy.contains("Registration successful!").should("be.visible");
 
       // Login as admin and check user details
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(users.admin.email);
       cy.get("#password").type(users.admin.password);
       cy.get("form").submit();
@@ -157,7 +157,7 @@ describe("Admin Panel", () => {
           cy.contains(testUser.email).should("be.visible");
           cy.contains(testUser.city).should("be.visible");
           cy.contains(testUser.postalCode).should("be.visible");
-          cy.contains("Non").should("be.visible"); // Not admin
+          cy.contains("User").should("be.visible"); // Not admin
         });
     });
   });
@@ -167,30 +167,30 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
 
       // Click logout button
-      cy.contains("Déconnexion").click();
+      cy.contains("Logout").click();
 
-      // Should be redirected to registration page
-      cy.contains("Formulaire d'Inscription").should("be.visible");
-      cy.contains("Panel d'Administration").should("not.exist");
+      // Should be redirected to home page
+      cy.contains("Registration Form").should("be.visible");
+      cy.contains("Admin Panel").should("not.exist");
     });
   });
 
   it("should prevent access to admin panel without authentication", () => {
     // Try to access admin panel directly without login
-    cy.visit("/");
+    cy.visit("/admin");
     cy.window().then((win) => {
       win.localStorage.removeItem("authToken");
     });
 
     // Should show unauthorized message
-    cy.contains("Accès non autorisé").should("be.visible");
-    cy.contains("Se connecter").should("be.visible");
+    cy.contains("Unauthorized Access").should("be.visible");
+    cy.contains("Please log in to access the admin panel").should("be.visible");
   });
 
   it("should show loading state while fetching users", () => {
@@ -198,65 +198,63 @@ describe("Admin Panel", () => {
       const adminUser = users.admin;
 
       // Login as admin
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
 
       // Should show loading message initially
-      cy.contains("Chargement des utilisateurs").should("be.visible");
+      cy.contains("Loading users...").should("be.visible");
 
       // Then should show the user list
-      cy.contains("Liste des Utilisateurs").should("be.visible");
+      cy.contains("User Management").should("be.visible");
     });
   });
 
   it("should handle multiple user registrations and display them in admin panel using fixtures", () => {
     cy.fixture("users").then((users) => {
-      const usersToRegister = [users.testUser1, users.testUser2];
+      const testUsers = [users.testUser1, users.testUser2, users.testUser3];
 
       // Register multiple users
-      usersToRegister.forEach((userData) => {
+      testUsers.forEach((user) => {
         cy.visit("/");
-        cy.get("#firstName").type(userData.firstName);
-        cy.get("#lastName").type(userData.lastName);
-        cy.get("#email").type(userData.email);
-        cy.get("#birthDate").type(userData.birthDate);
-        cy.get("#city").type(userData.city);
-        cy.get("#postalCode").type(userData.postalCode);
+        cy.get("#firstName").type(user.firstName);
+        cy.get("#lastName").type(user.lastName);
+        cy.get("#email").type(user.email);
+        cy.get("#birthDate").type(user.birthDate);
+        cy.get("#city").type(user.city);
+        cy.get("#postalCode").type(user.postalCode);
         cy.get("form").submit();
-        cy.contains("Inscription réussie !").should("be.visible");
+        cy.contains("Registration successful!").should("be.visible");
       });
 
-      // Login as admin
-      cy.contains("Connexion Admin").click();
+      // Login as admin and verify all users are visible
+      cy.contains("Admin Login").click();
       cy.get("#email").type(users.admin.email);
       cy.get("#password").type(users.admin.password);
       cy.get("form").submit();
 
-      // Should see all users including admin
-      cy.contains("Liste des Utilisateurs").should("be.visible");
-
-      usersToRegister.forEach((userData) => {
-        cy.contains(`${userData.firstName} ${userData.lastName}`).should(
-          "be.visible"
-        );
+      testUsers.forEach((user) => {
+        cy.contains(`${user.firstName} ${user.lastName}`).should("be.visible");
       });
     });
   });
 
   it("should test admin login with invalid credentials using fixtures", () => {
     cy.fixture("users").then((users) => {
-      const invalidUser = users.invalidUser;
+      const invalidUser = {
+        email: "invalid@example.com",
+        password: "wrongpassword"
+      };
 
       // Try to login with invalid credentials
-      cy.contains("Connexion Admin").click();
+      cy.contains("Admin Login").click();
       cy.get("#email").type(invalidUser.email);
       cy.get("#password").type(invalidUser.password);
       cy.get("form").submit();
 
       // Should show error message
-      cy.contains("Invalid credentials").should("be.visible");
+      cy.contains("Login failed").should("be.visible");
     });
   });
 });

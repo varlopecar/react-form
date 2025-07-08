@@ -128,17 +128,54 @@ export class ApiService {
       password: userData.password,
     };
 
-    return this.request<User>("/register", {
+    const response = await this.request<{
+      success: boolean;
+      message?: string;
+      user?: User;
+      error?: string;
+    }>("/register", {
       method: "POST",
       body: JSON.stringify(transformedData),
     });
+
+    // Handle the backend's RegisterResponse structure
+    if (!response.success) {
+      throw new Error(response.error || "Registration failed");
+    }
+
+    if (!response.user) {
+      throw new Error("Invalid response from server");
+    }
+
+    return response.user;
   }
 
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    return this.request<AuthResponse>("/login", {
+    const response = await this.request<{
+      success: boolean;
+      access_token?: string;
+      token_type?: string;
+      user?: User;
+      error?: string;
+    }>("/login", {
       method: "POST",
       body: JSON.stringify(credentials),
     });
+
+    // Handle the backend's LoginResponse structure
+    if (!response.success) {
+      throw new Error(response.error || "Login failed");
+    }
+
+    if (!response.access_token || !response.user) {
+      throw new Error("Invalid response from server");
+    }
+
+    return {
+      access_token: response.access_token,
+      token_type: response.token_type || "bearer",
+      user: response.user
+    };
   }
 
   // Blog post methods for Node.js/MongoDB API

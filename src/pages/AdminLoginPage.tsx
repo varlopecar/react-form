@@ -13,6 +13,7 @@ import {
 import {
     Home as HomeIcon
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { apiService } from "../services/api";
 import { toast } from "react-hot-toast";
 
@@ -22,6 +23,7 @@ export default function AdminLoginPage() {
         password: "",
     });
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -36,8 +38,8 @@ export default function AdminLoginPage() {
             const response = await apiService.login(formData);
             localStorage.setItem("authToken", response.access_token);
             toast.success("Login successful!");
-            // Redirect to admin panel
-            window.location.href = "/admin";
+            // Use React Router navigation instead of window.location.href
+            navigate("/admin");
         } catch (error) {
             console.error("Login failed:", error);
             toast.error("Login failed. Please check your credentials.");
