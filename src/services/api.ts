@@ -145,7 +145,7 @@ export class ApiService {
   async getBlogPosts(): Promise<BlogPost[]> {
     // This will connect to the separate Node.js/MongoDB API
     const blogApiUrl =
-      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+      import.meta.env.VITE_BLOG_API_URL || "https://express-mongodb-app-blush.vercel.app";
     return this.request<BlogPost[]>("/posts", {
       baseUrl: blogApiUrl,
     });
@@ -153,7 +153,7 @@ export class ApiService {
 
   async createBlogPost(postData: CreateBlogPost): Promise<BlogPost> {
     const blogApiUrl =
-      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+      import.meta.env.VITE_BLOG_API_URL || "https://express-mongodb-app-blush.vercel.app";
     return this.request<BlogPost>("/posts", {
       method: "POST",
       body: JSON.stringify(postData),
@@ -163,7 +163,7 @@ export class ApiService {
 
   async deleteBlogPost(postId: string): Promise<{ message: string }> {
     const blogApiUrl =
-      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+      import.meta.env.VITE_BLOG_API_URL || "https://express-mongodb-app-blush.vercel.app";
     return this.request<{ message: string }>(`/posts/${postId}`, {
       method: "DELETE",
       baseUrl: blogApiUrl,
@@ -175,7 +175,7 @@ export class ApiService {
     postData: CreateBlogPost
   ): Promise<BlogPost> {
     const blogApiUrl =
-      import.meta.env.VITE_BLOG_API_URL || "http://localhost:3001";
+      import.meta.env.VITE_BLOG_API_URL || "https://express-mongodb-app-blush.vercel.app";
     return this.request<BlogPost>(`/posts/${postId}`, {
       method: "PUT",
       body: JSON.stringify(postData),
