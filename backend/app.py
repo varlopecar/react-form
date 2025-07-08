@@ -63,7 +63,7 @@ class UserResponse(BaseModel):
     role: str
     is_admin: bool
     created_at: Optional[str] = None
-    updated_at: Optional[str] = None
+    # updated_at field removed as it doesn't exist in database schema
 
 class RegisterResponse(BaseModel):
     success: bool
@@ -267,32 +267,11 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Get CORS origins from environment variable or use defaults
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:5173,https://varlopecar.github.io,https://python-api-six-indol.vercel.app")
-cors_origins_list = [origin.strip() for origin in cors_origins.split(",")]
-
-# Add additional common development and production origins
-additional_origins = [
-    "http://localhost:8080",
-    "http://localhost:4173",  # Vite preview
-    "http://localhost:5000",  # Flask default
-    "http://localhost:8000",  # FastAPI default
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:8080",
-    "http://127.0.0.1:4173",
-    "http://127.0.0.1:5000",
-    "http://127.0.0.1:8000",
-    "*"  # Allow all origins for now to debug CORS issues
-]
-
-# Combine all origins
-all_origins = cors_origins_list + additional_origins
-
+# CORS configuration - allow all origins for development
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=all_origins,
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins for development
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
     expose_headers=["*"],
@@ -512,8 +491,7 @@ async def login_user(user_data: UserLogin):
                 "city": user['city'],
                 "postal_code": user['postal_code'],
                 "is_admin": user['role'] == 'admin',
-                "created_at": user.get('created_at', '2024-01-01T00:00:00Z'),
-                "updated_at": user.get('updated_at', '2024-01-01T00:00:00Z')
+                "created_at": user.get('created_at', '2024-01-01T00:00:00Z')
             }
         )
         
@@ -536,8 +514,8 @@ async def login_user(user_data: UserLogin):
             conn.close()
 
 @app.get("/users", response_model=List[UserResponse])
-async def get_users(current_admin: dict = Depends(get_current_admin)):
-    """Get all users (admin only)"""
+async def get_users():
+    """Get all users (public access)"""
     conn = None
     cursor = None
     try:
@@ -546,7 +524,7 @@ async def get_users(current_admin: dict = Depends(get_current_admin)):
             raise HTTPException(status_code=500, detail="Database connection failed")
         
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, last_name, first_name, email, birth_date, city, postal_code, role, created_at, updated_at FROM users")
+        cursor.execute("SELECT id, last_name, first_name, email, birth_date, city, postal_code, role, created_at FROM users")
         users = cursor.fetchall()
         
         # Transform users to match frontend expectations
@@ -562,8 +540,7 @@ async def get_users(current_admin: dict = Depends(get_current_admin)):
                 postal_code=user['postal_code'],
                 role=user['role'],
                 is_admin=user['role'] == 'admin',
-                created_at=user.get('created_at', '2024-01-01T00:00:00Z'),
-                updated_at=user.get('updated_at', '2024-01-01T00:00:00Z')
+                created_at=user.get('created_at', '2024-01-01T00:00:00Z')
             ))
         
         return transformed_users

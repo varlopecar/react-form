@@ -1,10 +1,10 @@
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/HomePage";
 import AdminPage from "./pages/AdminPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
+// LoginPage import removed - only admin login is available
 import DashboardPage from "./pages/DashboardPage";
 import PostsPage from "./pages/PostsPage";
 import UsersPage from "./pages/UsersPage";
@@ -35,22 +35,7 @@ const RegisterPageWrapper = () => {
   return <RegisterPage onSubmit={handleSubmit} />;
 };
 
-const LoginPageWrapper = () => {
-  const navigate = useNavigate();
-  
-  const handleLogin = async (data: { email: string; password: string }) => {
-    try {
-      const response = await apiService.login(data);
-      localStorage.setItem("authToken", response.access_token);
-      toast.success("Login successful!");
-      navigate("/dashboard");
-    } catch (error) {
-      toast.error("Login failed");
-    }
-  };
-
-  return <LoginPage onLogin={handleLogin} />;
-};
+// Regular login removed - only admin login is available
 
 const DashboardPageWrapper = () => {
   const navigate = useNavigate();
@@ -95,9 +80,8 @@ function App() {
     <>
       <Toaster position="top-right" />
       <Routes>
-        <Route path="/" element={<Navigate to="/register" replace />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPageWrapper />} />
-        <Route path="/login" element={<LoginPageWrapper />} />
         <Route path="/dashboard" element={<DashboardPageWrapper />} />
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/users" element={<UsersPage />} />

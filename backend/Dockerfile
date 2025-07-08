@@ -10,9 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY app.py .
-COPY models.py .
-COPY auth.py .
-COPY database.py .
 
 EXPOSE 8000
 

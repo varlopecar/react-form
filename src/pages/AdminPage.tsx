@@ -81,7 +81,7 @@ export default function AdminPage() {
                 postal_code: "75001",
                 is_admin: true,
                 created_at: "2024-01-01T00:00:00Z",
-                updated_at: "2024-01-01T00:00:00Z",
+                // updated_at field removed as it doesn't exist in database schema
             });
         } else {
             // Redirect to login

@@ -1,217 +1,220 @@
-# React Form Project - Full Stack Application
+# React Form with Blog Posts & User Management
 
-[![Build and Test React App](https://github.com/varlopecar/react-form/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/varlopecar/react-form/actions/workflows/ci-cd.yml)
-[![codecov](https://codecov.io/gh/varlopecar/react-form/branch/main/graph/badge.svg)](https://app.codecov.io/gh/varlopecar/react-form)
+A comprehensive React application with user registration, blog posts, and admin management features.
 
-## 🚀 Démo en Ligne
+## 🚀 Features
 
-Visitez la démo en ligne : [https://varlopecar.github.io/react-form/](https://varlopecar.github.io/react-form/)
+### **Blog Posts System**
+- **View Posts**: Browse all blog posts on the main page
+- **Create Posts**: Admins can create new blog posts
+- **Edit Posts**: Admins can edit existing posts
+- **Delete Posts**: Admins can delete posts
+- **Responsive Design**: Beautiful card-based layout
 
-## 🌟 Fonctionnalités Clés
+### **User Management System**
+- **User Registration**: Complete registration form with validation
+- **User Authentication**: Login system with JWT tokens
+- **Admin Panel**: Full user management for administrators
+- **User Details**: View complete user information
+- **User Deletion**: Admins can delete users (except other admins)
 
-- **Formulaire d'inscription complet** avec validation en temps réel
-- **Backend RESTful** pour la gestion des utilisateurs (création, lecture, suppression)
-- **Authentification administrateur** sécurisée avec JWT
-- **Base de données MySQL** persistante
-- **Tests unitaires, d'intégration et E2E** pour garantir la qualité du code
-- **Pipeline CI/CD automatisée** pour les tests, le build, et les déploiements
-- **Déploiement du frontend** sur GitHub Pages et du **backend** sur Vercel
+### **Admin Features**
+- **Dashboard**: Comprehensive admin interface
+- **User Management**: Create, view, and delete users
+- **Post Management**: Full CRUD operations on blog posts
+- **Search & Filter**: Advanced search capabilities
+- **Privacy Protection**: Masked sensitive information
 
-## 🛠️ Stack Technique
+## 🏗️ Architecture
 
-| Domaine             | Outil                                                                                                                             | Rôle                                  |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| **Frontend**        | [**React**](https://react.dev/) / [**Vite**](https://vitejs.dev/)                                                                 | Interface utilisateur et build        |
-| **Backend**         | [**FastAPI**](https://fastapi.tiangolo.com/)                                                                                      | API RESTful en Python                 |
-| **Base de Données** | [**MySQL**](https://www.mysql.com/)                                                                                               | Stockage des données des utilisateurs |
-| **Tests**           | [**Vitest**](https://vitest.dev/) / [**Cypress**](https://www.cypress.io/)                                                        | Tests unitaires, intégration et E2E   |
-| **CI/CD**           | [**GitHub Actions**](https://github.com/features/actions) / [**Docker**](https://www.docker.com/)                                 | Automatisation et conteneurisation    |
-| **Hébergement**     | [**GitHub Pages**](https://pages.github.com/) / [**Vercel**](https://vercel.com/) / [**AlwaysData**](https://www.alwaysdata.com/) | Déploiement Front, Back et BDD        |
-| **Qualité**         | [**ESLint**](https://eslint.org/) / [**Codecov**](https://about.codecov.io/)                                                      | Linter et couverture de tests         |
+### **Frontend (React + TypeScript)**
+- **Main Page**: Blog posts display with tabbed interface
+- **User Management**: Admin-only user management section
+- **Authentication**: Login/logout functionality
+- **Responsive UI**: Material-UI components
 
-## 🚀 Démarrage Rapide
+### **Backend APIs**
+- **Python/FastAPI**: User management and authentication
+- **Node.js/MongoDB**: Blog posts management
+- **JWT Authentication**: Secure token-based auth
+- **CORS Support**: Cross-origin request handling
 
-### Prérequis
+## 📋 Requirements
 
-- Node.js (v20.x recommandée)
-- Docker et Docker Compose
+### **Frontend Dependencies**
+```bash
+npm install
+# or
+pnpm install
+```
 
-### 1. Installation (sans Docker)
+### **Backend Dependencies**
+```bash
+# Python API
+cd backend
+pip install -r requirements.txt
 
-Pour lancer uniquement le frontend en local (connecté à l'API de production).
+# Node.js API (separate deployment)
+# Already deployed at: https://express-mongodb-app-blush.vercel.app
+```
+
+## ⚙️ Configuration
+
+### **Environment Variables**
+
+Create a `.env.local` file in the root directory:
 
 ```bash
-# Cloner le projet
-git clone https://github.com/varlopecar/react-form.git
-cd react-form
+# Frontend API URL (Python/FastAPI)
+VITE_API_URL=http://localhost:8000
 
-# Installer les dépendances
-pnpm install
+# Blog API URL (Node.js/MongoDB)
+VITE_BLOG_API_URL=https://express-mongodb-app-blush.vercel.app
+```
 
-# Lancer le serveur de développement
+### **Database Configuration**
+
+The Python API uses MySQL. Configure in `env.example`:
+
+```bash
+MYSQL_DATABASE=user_registration
+MYSQL_USER=your_user
+MYSQL_PASSWORD=your_password
+MYSQL_HOST=your_host
+JWT_SECRET=your_secret_key
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
+```
+
+## 🚀 Getting Started
+
+### **1. Start the Backend**
+```bash
+cd backend
+python app.py
+```
+
+### **2. Start the Frontend**
+```bash
 pnpm dev
 ```
 
-### 2. Lancer l'environnement complet avec Docker (Recommandé)
+### **3. Access the Application**
+- **Main Page**: http://localhost:5173 (Blog posts)
+- **Admin Login**: http://localhost:5173/admin/login
+- **User Login**: http://localhost:5173/login
 
-Cette méthode lance le frontend, le backend et la base de données dans des conteneurs isolés.
+## 📱 Usage
 
-**a. Créez un fichier `.env`** à la racine en vous basant sur `env.example` :
+### **For Regular Users**
+1. Visit the main page to browse blog posts
+2. Register for an account if needed
+3. Login to access additional features
 
+### **For Administrators**
+1. Login with admin credentials
+2. Access the "User Management" tab
+3. Create, view, and manage users
+4. Create, edit, and delete blog posts
+5. View detailed user information
+
+## 🔧 API Endpoints
+
+### **User Management API (Python/FastAPI)**
+- `POST /register` - Register new user
+- `POST /login` - User login
+- `GET /users` - Get all users (admin only)
+- `DELETE /users/{id}` - Delete user (admin only)
+- `GET /health` - Health check
+
+### **Blog Posts API (Node.js/MongoDB)**
+- `GET /posts` - Get all posts
+- `POST /posts` - Create new post
+- `PUT /posts/{id}` - Update post
+- `DELETE /posts/{id}` - Delete post
+
+## 🎨 UI Components
+
+### **PostsSection**
+- Displays blog posts in a grid layout
+- Create/edit/delete functionality for admins
+- Responsive card design
+- Loading states and error handling
+
+### **UsersSection**
+- Table-based user management
+- Search and filter functionality
+- User creation and deletion
+- Detailed user information modal
+
+### **HomePage**
+- Tabbed interface for posts and users
+- Admin authentication check
+- Navigation and logout functionality
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based authentication
+- **Password Hashing**: bcrypt password encryption
+- **Admin Protection**: Admin-only features
+- **Input Validation**: Comprehensive form validation
+- **CORS Configuration**: Secure cross-origin requests
+
+## 🧪 Testing
+
+### **Run Tests**
 ```bash
-# Base de données MySQL (pour Docker)
-MYSQL_DATABASE=react_form
-MYSQL_USER=user
-MYSQL_PASSWORD=password
-MYSQL_ROOT_PASSWORD=root
-MYSQL_HOST=mysql
-
-# Configuration FastAPI
-PORT=8000
-
-# Compte administrateur injecté dans la BDD de test
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=admin123
-
-# JWT Secret
-JWT_SECRET=your-secret-key-here
-
-# Frontend API URL
-VITE_API_URL=http://localhost:8000
+pnpm test
 ```
 
-**b. Lancez les services avec Docker Compose :**
-
+### **Run E2E Tests**
 ```bash
-docker-compose up --build
+pnpm run cypress:open
 ```
 
-- Le frontend sera accessible sur `http://localhost:3000`
-- Le backend sur `http://localhost:8000`
-- La base de données est gérable via Adminer sur `http://localhost:8080`
+## 📦 Deployment
 
-## 🧪 Tests
-
-- **Lancer les tests unitaires et d'intégration :**
-
-  ```bash
-  pnpm run test
-  ```
-
-- **Générer le rapport de couverture :**
-
-  ```bash
-  pnpm run coverage
-  ```
-
-  Le rapport est visible dans le dossier `coverage/`
-
-- **Lancer les tests End-to-End (E2E) avec Cypress :** _(Assurez-vous que l'environnement Docker est lancé)_
-
-  ```bash
-  # Lancer en mode console
-  pnpm run cypress:run
-
-  # Ouvrir l'interface graphique de Cypress
-  pnpm run cypress:open
-  ```
-
-## 🔄 Pipeline CI/CD
-
-La pipeline GitHub Actions automatise l'ensemble du cycle de vie de l'application.
-
-```mermaid
-graph TD
-    A[Start: Push/PR sur main] --> B{build_test};
-
-    B --> C{docker_and_e2e};
-    B --> D{deploy_pages};
-    B --> E{deploy_backend_vercel};
-
-    subgraph "Phase 1: Build & Tests Unitaires"
-        B["Job: build_test<br/>(Node.js 20.x)<br/>- pnpm ci<br/>- vitest coverage<br/>- jsdoc<br/>- vite build"]
-    end
-
-    subgraph "Phase 2: Tests E2E & Déploiements"
-        C["Job: docker_and_e2e<br/>- docker-compose up<br/>- cypress run"]
-        D["Job: deploy_pages<br/>Déployer sur GitHub Pages"]
-        E["Job: deploy_backend_vercel<br/>Déployer sur Vercel"]
-    end
-```
-
-## 📚 Documentation
-
-La documentation technique des composants React est générée avec JSDoc.
-
+### **Frontend (Vercel)**
 ```bash
-pnpm run doc
+pnpm build
+# Deploy to Vercel
 ```
 
-Le résultat est disponible dans le dossier `public/docs`.
-
-## 📡 Endpoints API
-
-### API de Gestion des Utilisateurs (Python FastAPI)
-
-- `POST /register` - Inscription utilisateur
-- `POST /login` - Authentification utilisateur
-- `GET /users` - Obtenir tous les utilisateurs (admin seulement)
-- `DELETE /users/{id}` - Supprimer un utilisateur (admin seulement)
-- `GET /me` - Obtenir les informations de l'utilisateur actuel
-- `GET /health` - Vérification de santé de l'API
-
-## 👤 Rôles Utilisateurs
-
-### Utilisateurs Réguliers
-
-- Peuvent s'inscrire et se connecter
-- Peuvent voir la page d'accueil
-- Peuvent voir la liste des utilisateurs avec informations réduites
-
-### Utilisateurs Admin
-
-- Toutes les permissions des utilisateurs réguliers
-- Peuvent voir les informations complètes des utilisateurs
-- Peuvent supprimer les utilisateurs non-admin
-
-## 🐳 Commandes Docker
-
+### **Backend (Vercel)**
 ```bash
-# Démarrer les services
-pnpm run docker:up
-
-# Arrêter les services
-pnpm run docker:down
-
-# Reconstruire les images
-pnpm run docker:build
-
-# Voir les logs
-pnpm run docker:logs
+# Backend is already configured for Vercel deployment
+# Uses vercel.json and vercel.py
 ```
 
-## 📦 Scripts Disponibles
+## 🐛 Troubleshooting
 
+### **Common Issues**
+1. **CORS Errors**: Check environment variables and API URLs
+2. **Database Connection**: Verify database credentials
+3. **Authentication**: Ensure JWT secret is configured
+4. **Blog API**: Verify the Node.js API is accessible
+
+### **Debug Mode**
+Enable debug logging in the backend:
 ```bash
-# Développement
-pnpm dev          # Lancer le serveur de développement
-pnpm build        # Build pour la production
-pnpm preview      # Prévisualiser le build
-
-# Tests
-pnpm test         # Lancer les tests
-pnpm coverage     # Générer le rapport de couverture
-pnpm cypress:run  # Tests E2E en mode console
-pnpm cypress:open # Ouvrir Cypress UI
-
-# Qualité
-pnpm lint         # Linter le code
-pnpm doc          # Générer la documentation
-
-# Déploiement
-pnpm deploy       # Déployer sur GitHub Pages
+LOG_LEVEL=debug
 ```
 
-## ✍️ Auteur
+## 📄 License
 
-Projet réalisé par **Varlopecar**.
+This project is licensed under the MIT License.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📞 Support
+
+For issues and questions:
+1. Check the troubleshooting guide
+2. Review the API documentation
+3. Check the logs for error details

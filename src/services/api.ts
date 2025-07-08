@@ -28,7 +28,6 @@ export interface User {
   postal_code: string;
   is_admin: boolean;
   created_at: string;
-  updated_at: string;
 }
 
 export interface LoginCredentials {
@@ -184,15 +183,11 @@ export class ApiService {
     });
   }
 
-  // User management methods (without token parameter for convenience)
+  // User management methods (public access)
   async getUsers(): Promise<User[]> {
-    const token = localStorage.getItem("authToken");
-    if (!token) throw new Error("No authentication token");
-
     return this.request<User[]>("/users", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
   }

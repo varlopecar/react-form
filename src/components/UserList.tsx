@@ -217,7 +217,7 @@ export const UserList = ({ token, currentUser }: Props) => {
                                 <strong>Date de création:</strong> {new Date(selectedUser.created_at).toLocaleDateString('fr-FR')}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                                <strong>Dernière modification:</strong> {new Date(selectedUser.updated_at).toLocaleDateString('fr-FR')}
+                                <strong>Date de création:</strong> {new Date(selectedUser.created_at).toLocaleDateString('fr-FR')}
                             </Typography>
                         </Box>
                     )}
