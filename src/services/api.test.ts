@@ -160,7 +160,7 @@ describe("ApiService", () => {
   });
 
   describe("getUsers", () => {
-    it("should fetch users with authentication", async () => {
+    it("should fetch users without authentication", async () => {
       const mockUsers = [
         {
           id: 1,
@@ -186,7 +186,6 @@ describe("ApiService", () => {
       expect(fetch).toHaveBeenCalledWith("http://localhost:8000/users", {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer user@example.com",
         },
         credentials: "omit",
         mode: "cors",

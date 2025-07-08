@@ -94,19 +94,19 @@ describe("App Component", () => {
     localStorageMock.getItem.mockReturnValue(null);
   });
 
-  it("should render the registration page by default", () => {
+  it("should render the home page by default", () => {
     renderWithRouter(<App />);
 
-    const registerPage = screen.getByTestId("register-page");
-    expect(registerPage).toBeInTheDocument();
+    const homePage = screen.getByTestId("home-page");
+    expect(homePage).toBeInTheDocument();
   });
 
   it("should handle routing correctly", () => {
     renderWithRouter(<App />);
 
-    // Should redirect to register page by default
-    const registerPage = screen.getByTestId("register-page");
-    expect(registerPage).toBeInTheDocument();
+    // Should show home page by default
+    const homePage = screen.getByTestId("home-page");
+    expect(homePage).toBeInTheDocument();
   });
 
   it("should render without crashing", () => {
@@ -116,10 +116,10 @@ describe("App Component", () => {
     expect(document.body).toBeInTheDocument();
   });
 
-  test('redirects to register when accessing root path', () => {
+  test('shows home page when accessing root path', () => {
     window.history.pushState({}, '', '/');
     renderWithRouter(<App />);
-    expect(screen.getByTestId("register-page")).toBeInTheDocument();
+    expect(screen.getByTestId("home-page")).toBeInTheDocument();
   });
 
   test('shows 404 page for unknown routes', () => {
