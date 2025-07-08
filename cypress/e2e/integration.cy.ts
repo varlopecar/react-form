@@ -4,9 +4,31 @@ describe("Complete Integration Tests", () => {
     cy.waitForAppReady();
   });
 
+  // Helper function to open registration form
+  const openRegistrationForm = () => {
+    cy.contains("User Registration").click(); // Clique sur l'onglet User Registration
+    cy.wait(1000); // Attendre que l'onglet soit actif
+    cy.contains("Create User").click(); // Ouvre le formulaire
+    cy.wait(500); // Attendre que la modal s'ouvre
+  };
+
+  // Helper function to close modal if open
+  const closeModalIfOpen = () => {
+    cy.get('body').then(($body) => {
+      if ($body.find('.MuiDialog-container').length > 0) {
+        // Cliquer sur le bouton Cancel dans la modal
+        cy.contains('button', 'Cancel').click();
+        cy.wait(500);
+      }
+    });
+  };
+
   it("should complete full user registration and admin management workflow", () => {
     cy.fixture("users").then((users) => {
       const testUser = users.testUser1;
+
+      // Open registration form
+      openRegistrationForm();
 
       // Register a new user
       cy.get("#firstName").type(testUser.firstName);
@@ -16,10 +38,18 @@ describe("Complete Integration Tests", () => {
       cy.get("#city").type(testUser.city);
       cy.get("#postalCode").type(testUser.postalCode);
       cy.get("form").submit();
-      cy.contains("Registration successful!").should("be.visible");
+      cy.contains("Registration successful!", {timeout: 7000}).should("be.visible");
+      cy.wait(1000);
 
+      // Close modal and navigate to admin
+      closeModalIfOpen();
+      cy.wait(1000);
+      
+      // Navigate to admin login page
+      cy.visit("/admin/login");
+      cy.wait(1000);
+      
       // Login as admin
-      cy.contains("Admin Login").click();
       cy.get("#email").type(users.admin.email);
       cy.get("#password").type(users.admin.password);
       cy.get("form").submit();
@@ -45,6 +75,9 @@ describe("Complete Integration Tests", () => {
     cy.fixture("users").then((users) => {
       const invalidUser = users.invalidUser;
 
+      // Open registration form
+      openRegistrationForm();
+
       cy.get("#firstName").type(invalidUser.firstName);
       cy.get("#lastName").type(invalidUser.lastName);
       cy.get("#email").type(invalidUser.email);
@@ -53,7 +86,8 @@ describe("Complete Integration Tests", () => {
       cy.get("#postalCode").type(invalidUser.postalCode);
       cy.get("form").submit();
 
-      cy.contains("Please correct the errors in the form").should("be.visible");
+      cy.contains("Please correct the errors in the form", {timeout: 7000}).should("be.visible");
+      cy.wait(1000);
     });
   });
 
@@ -66,12 +100,16 @@ describe("Complete Integration Tests", () => {
       cy.contains("Unauthorized Access").should("be.visible");
       cy.contains("Please log in to access the admin panel").should("be.visible");
 
+      // Navigate to admin login page
+      cy.visit("/admin/login");
+      cy.wait(1000);
+      
       // Login as admin
-      cy.contains("Admin Login").click();
       cy.get("#email").type(adminUser.email);
       cy.get("#password").type(adminUser.password);
       cy.get("form").submit();
 
+      // Look for admin panel content
       cy.contains("Admin Panel").should("be.visible");
     });
   });
@@ -79,6 +117,9 @@ describe("Complete Integration Tests", () => {
   it("should test user registration with duplicate email", () => {
     cy.fixture("users").then((users) => {
       const testUser = users.testUser1;
+
+      // Open registration form
+      openRegistrationForm();
 
       // Register first user
       cy.get("#firstName").type(testUser.firstName);
@@ -88,7 +129,14 @@ describe("Complete Integration Tests", () => {
       cy.get("#city").type(testUser.city);
       cy.get("#postalCode").type(testUser.postalCode);
       cy.get("form").submit();
-      cy.contains("Registration successful!").should("be.visible");
+      cy.contains("Registration successful!", {timeout: 7000}).should("be.visible");
+      cy.wait(1000);
+
+      // Close modal and open registration form again for second user
+      closeModalIfOpen();
+      cy.wait(1000);
+      openRegistrationForm();
+      cy.wait(500);
 
       // Try to register with same email
       cy.get("#firstName").type("Another");
@@ -99,11 +147,17 @@ describe("Complete Integration Tests", () => {
       cy.get("#postalCode").type("54321");
       cy.get("form").submit();
 
-      cy.contains("Email already registered").should("be.visible");
+      // Check for error message (could be toast or form error)
+      cy.contains("Email already registered", {timeout: 7000}).should("be.visible");
+      cy.wait(1000);
     });
   });
 
   it("should test responsive design and accessibility", () => {
+    // Open registration form
+    openRegistrationForm();
+    cy.wait(500);
+
     // Test form accessibility
     cy.get("form").should("be.visible");
     cy.get("#firstName").should("be.visible");
@@ -117,11 +171,15 @@ describe("Complete Integration Tests", () => {
     cy.viewport("iphone-6");
     cy.get("form").should("be.visible");
     cy.get('button[type="submit"]').should("be.visible");
+    cy.wait(500);
   });
 
   it("should test admin panel user management features", () => {
     cy.fixture("users").then((users) => {
       const testUser = users.testUser2;
+
+      // Open registration form
+      openRegistrationForm();
 
       // Register a user
       cy.get("#firstName").type(testUser.firstName);
@@ -131,10 +189,18 @@ describe("Complete Integration Tests", () => {
       cy.get("#city").type(testUser.city);
       cy.get("#postalCode").type(testUser.postalCode);
       cy.get("form").submit();
-      cy.contains("Registration successful!").should("be.visible");
+      cy.contains("Registration successful!", {timeout: 7000}).should("be.visible");
+      cy.wait(1000);
 
+      // Close modal and navigate to admin
+      closeModalIfOpen();
+      cy.wait(1000);
+      
+      // Navigate to admin login page
+      cy.visit("/admin/login");
+      cy.wait(1000);
+      
       // Login as admin
-      cy.contains("Admin Login").click();
       cy.get("#email").type(users.admin.email);
       cy.get("#password").type(users.admin.password);
       cy.get("form").submit();

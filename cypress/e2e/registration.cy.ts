@@ -1,7 +1,8 @@
 describe("User Registration", () => {
   beforeEach(() => {
-    cy.visit("/");
-    cy.waitForAppReady();
+    cy.visit("/"); // Page d'accueil
+    cy.contains("User Registration").click(); // Clique sur l'onglet User Registration
+    cy.contains("Create User").click(); // Ouvre le formulaire
   });
 
   it("should display the registration form", () => {
@@ -45,7 +46,7 @@ describe("User Registration", () => {
   it("should validate email format", () => {
     cy.get("#email").type("invalid-email");
     cy.get("#email").blur();
-    cy.contains("Invalid email").should("be.visible");
+    cy.contains("Email is not valid").should("be.visible");
   });
 
   it("should register a new user successfully", () => {
@@ -72,7 +73,7 @@ describe("User Registration", () => {
   it("should validate email format", () => {
     cy.get("#email").type("invalid-email");
     cy.get("#email").blur();
-    cy.contains("Invalid email").should("be.visible");
+    cy.contains("Email is not valid").should("be.visible");
   });
 
   it("should validate age requirement (18+)", () => {
@@ -88,7 +89,7 @@ describe("User Registration", () => {
   it("should validate postal code format", () => {
     cy.get("#postalCode").type("123");
     cy.get("#postalCode").blur();
-    cy.contains("Postal code must be at least 4 characters").should("be.visible");
+    cy.contains("Postal code must contain 5 digits").should("be.visible");
   });
 
   it("should enable submit button only when all fields are filled", () => {

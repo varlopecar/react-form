@@ -24,6 +24,8 @@
     "doc": "jsdoc --readme ./README.md -c ./jsdoc.config.json -r -d ./public/docs",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:fast": "cypress run --config-file cypress.config.fast.mjs",
+    "cypress:quick": "cypress run --spec 'cypress/e2e/registration.cy.ts' --config-file cypress.config.fast.mjs",
     "e2e": "cypress run",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",

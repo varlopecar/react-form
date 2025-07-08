@@ -4,15 +4,15 @@ export default defineConfig({
   e2e: {
     baseUrl: process.env.CYPRESS_BASE_URL || "http://localhost:3000",
     video: false,
-    screenshotOnRunFailure: true,
-    defaultCommandTimeout: 10000,
-    requestTimeout: 10000,
-    responseTimeout: 10000,
-    pageLoadTimeout: 60000,
+    screenshotOnRunFailure: false, // Désactiver les screenshots pour aller plus vite
+    defaultCommandTimeout: 5000, // Réduire de 10s à 5s
+    requestTimeout: 5000, // Réduire de 10s à 5s
+    responseTimeout: 5000, // Réduire de 10s à 5s
+    pageLoadTimeout: 30000, // Réduire de 60s à 30s
     viewportWidth: 1280,
     viewportHeight: 720,
     retries: {
-      runMode: 2,
+      runMode: 0, // Désactiver les retries pour aller plus vite
       openMode: 0,
     },
     setupNodeEvents(on, config) {
