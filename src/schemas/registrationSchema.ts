@@ -40,23 +40,23 @@ const postalCodeRegex = /^[0-9]{5}$/;
 export const registrationSchema = z.object({
   firstName: z
     .string()
-    .min(2, "Le prénom doit contenir au moins 2 caractères")
-    .regex(nameRegex, "Le prénom contient des caractères invalides"),
+    .min(2, "First name must contain at least 2 characters")
+    .regex(nameRegex, "First name contains invalid characters"),
   lastName: z
     .string()
-    .min(2, "Le nom doit contenir au moins 2 caractères")
-    .regex(nameRegex, "Le nom contient des caractères invalides"),
-  email: z.string().email("L'email n'est pas valide"),
+    .min(2, "Last name must contain at least 2 characters")
+    .regex(nameRegex, "Last name contains invalid characters"),
+  email: z.string().email("Email is not valid"),
   birthDate: z
     .date()
-    .refine(isAtLeast18YearsAgo, "Vous devez avoir au moins 18 ans"),
+    .refine(isAtLeast18YearsAgo, "You must be at least 18 years old"),
   city: z
     .string()
-    .min(2, "La ville doit contenir au moins 2 caractères")
-    .regex(nameRegex, "La ville contient des caractères invalides"),
+    .min(2, "City must contain at least 2 characters")
+    .regex(nameRegex, "City contains invalid characters"),
   postalCode: z
     .string()
-    .regex(postalCodeRegex, "Le code postal doit contenir 5 chiffres"),
+    .regex(postalCodeRegex, "Postal code must contain 5 digits"),
 });
 
 /**

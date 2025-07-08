@@ -165,7 +165,7 @@ describe("RegistrationForm", () => {
         await waitFor(() => {
             // Use a function matcher to find the error text even if it's split or wrapped
             expect(screen.getByText((content) =>
-                content.includes("Postal code must be at least 4 characters")
+                content.includes("Postal code must contain 5 digits")
             )).toBeInTheDocument();
             expect(toast.error).toHaveBeenCalled();
         });
