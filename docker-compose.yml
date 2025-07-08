@@ -5,6 +5,7 @@ x-common-variables: &common-variables
   MYSQL_USER: ${MYSQL_USER}
   MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  MYSQL_PORT: ${MYSQL_PORT}
 
 # Specific variables for FastAPI
 x-fastapi-variables: &fastapi-variables

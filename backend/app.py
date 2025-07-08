@@ -114,6 +114,42 @@ def get_connection():
         logger.error(f"Unexpected error during database connection: {err}")
         return None
 
+def run_database_migrations():
+    """Run database migrations to ensure schema is up to date"""
+    conn = None
+    cursor = None
+    try:
+        logger.info("Running database migrations...")
+        
+        conn = get_connection()
+        if not conn or not conn.is_connected():
+            logger.error("Cannot run migrations: database connection failed")
+            return
+            
+        cursor = conn.cursor(dictionary=True)
+
+        # Check if role column exists
+        cursor.execute("SHOW COLUMNS FROM users LIKE 'role'")
+        role_column_exists = cursor.fetchone()
+
+        if not role_column_exists:
+            logger.info("Adding 'role' column to users table...")
+            cursor.execute("ALTER TABLE users ADD COLUMN role ENUM('admin', 'user') DEFAULT 'user'")
+            conn.commit()
+            logger.info("Successfully added 'role' column to users table")
+        else:
+            logger.info("'role' column already exists in users table")
+
+    except Error as err:
+        logger.error(f"Error running database migrations: {err}")
+    except Exception as err:
+        logger.error(f"Unexpected error running database migrations: {err}")
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
+
 def create_admin_user():
     """Create admin user if not exists"""
     conn = None
@@ -249,6 +285,9 @@ async def lifespan(app: FastAPI):
     """Initialize the application when it starts."""
     try:
         logger.info("Starting application initialization...")
+        
+        # Run database migrations first
+        run_database_migrations()
         
         # Create admin user
         create_admin_user()
