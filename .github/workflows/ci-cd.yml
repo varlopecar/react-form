@@ -93,10 +93,16 @@ jobs:
 
       - name: Start Docker environment
         env:
-          MYSQL_DATABASE: ${MYSQL_DATABASE}
-          MYSQL_USER: ${MYSQL_USER}
-          MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-          MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+          MYSQL_DATABASE: react_form
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_HOST: mysql-db
+          MYSQL_PORT: 3306
+          PORT: 8000
+          ADMIN_EMAIL: admin@example.com
+          ADMIN_PASSWORD: admin123
+          JWT_SECRET: your-secret-key-here
         run: docker compose up -d --build
         working-directory: ./
 
@@ -106,6 +112,12 @@ jobs:
           timeout 90 bash -c 'until curl -f http://localhost:8000/health > /dev/null 2>&1; do sleep 2; done'
           echo "Waiting for frontend (http://localhost:3000) to be ready..."
           timeout 90 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 2; done'
+
+      - name: Verify backend health and admin user
+        run: |
+          echo "Verifying backend health..."
+          curl -f http://localhost:8000/health
+          echo "Backend is healthy!"
 
       - name: Display frontend logs
         run: docker logs react-app
@@ -147,12 +159,20 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Cypress binary
+        run: |
+          npx cypress install --force
+          npx cypress verify
+
       - name: Run Cypress tests against Docker environment
         env:
           VITE_API_URL: http://localhost:8000
           CYPRESS_BASE_URL: http://localhost:3000
         run: |
-          pnpm run cypress:run
+          echo "Starting Cypress tests..."
+          echo "Backend URL: http://localhost:8000"
+          echo "Frontend URL: http://localhost:3000"
+          pnpm run cypress:run || (echo "Cypress tests failed, but continuing..." && exit 1)
 
       - name: Stop services
         if: always()

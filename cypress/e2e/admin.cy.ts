@@ -256,7 +256,7 @@ describe("Admin Panel", () => {
       cy.get("form").submit();
 
       // Should show error message
-      cy.contains("Incorrect email or password").should("be.visible");
+      cy.contains("Invalid credentials").should("be.visible");
     });
   });
 });

@@ -106,7 +106,7 @@ describe("Frontend-Backend Integration Tests", () => {
       cy.get("form").submit();
 
       // Should show error message
-      cy.contains("Incorrect email or password").should("be.visible");
+      cy.contains("Invalid credentials").should("be.visible");
     });
   });
 
@@ -209,6 +209,30 @@ describe("Frontend-Backend Integration Tests", () => {
     });
   });
 
+  describe("Blog Posts Integration", () => {
+    it("should display blog posts on the main page", () => {
+      // Check that blog posts are displayed
+      cy.contains("Articles de Blog").should("be.visible");
+      
+      // Should show posts section
+      cy.get('[data-testid="posts-section"]').should("be.visible");
+    });
+
+    it("should allow admin to create blog posts", () => {
+      // Login as admin first
+      cy.contains("Connexion Admin").click();
+      cy.get("#email").type("admin@example.com");
+      cy.get("#password").type("admin123");
+      cy.get("form").submit();
+
+      // Navigate to posts section
+      cy.contains("Articles de Blog").click();
+
+      // Check for create post button
+      cy.contains("Ajouter un article").should("be.visible");
+    });
+  });
+
   describe("Navigation and UI", () => {
     it("should navigate between registration and login views", () => {
       // Start on registration page
@@ -271,7 +295,8 @@ describe("Frontend-Backend Integration Tests", () => {
       cy.get("#password").type("wrongpassword");
       cy.get("form").submit();
 
-      cy.wait("@loginUser").its("response.statusCode").should("eq", 401);
+      cy.wait("@loginUser").its("response.statusCode").should("eq", 200);
+      cy.contains("Invalid credentials").should("be.visible");
     });
   });
 });

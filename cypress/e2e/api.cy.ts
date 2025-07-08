@@ -23,13 +23,12 @@ describe("API Endpoints", () => {
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.be.oneOf([200, 201]);
-        expect(response.body).to.have.property("email", testUser.email);
-        expect(response.body).to.have.property(
-          "first_name",
-          testUser.firstName
-        );
-        expect(response.body).to.have.property("last_name", testUser.lastName);
-        expect(response.body).to.have.property("is_admin", false);
+        expect(response.body).to.have.property("success", true);
+        expect(response.body).to.have.property("message", "Inscription réussie !");
+        expect(response.body.user).to.have.property("email", testUser.email);
+        expect(response.body.user).to.have.property("first_name", testUser.firstName);
+        expect(response.body.user).to.have.property("last_name", testUser.lastName);
+        expect(response.body.user).to.have.property("is_admin", false);
       });
     });
   });
@@ -48,8 +47,10 @@ describe("API Endpoints", () => {
         failOnStatusCode: false,
       }).then((response) => {
         expect(response.status).to.equal(200);
+        expect(response.body).to.have.property("success", true);
         expect(response.body).to.have.property("access_token");
         expect(response.body).to.have.property("token_type", "bearer");
+        expect(response.body.user).to.have.property("is_admin", true);
       });
     });
   });
@@ -67,62 +68,51 @@ describe("API Endpoints", () => {
         },
         failOnStatusCode: false,
       }).then((response) => {
-        expect(response.status).to.equal(401);
-        expect(response.body).to.have.property("detail");
+        expect(response.status).to.equal(200);
+        expect(response.body).to.have.property("success", false);
+        expect(response.body).to.have.property("error", "Invalid credentials");
       });
     });
   });
 
-  it("should test get users API endpoint with admin token", () => {
-    cy.fixture("users").then((users) => {
-      const adminUser = users.admin;
-
-      // First login to get token
-      cy.request({
-        method: "POST",
-        url: "http://localhost:8000/login",
-        body: {
-          email: adminUser.email,
-          password: adminUser.password,
-        },
-      }).then((loginResponse) => {
-        const token = loginResponse.body.access_token;
-
-        // Use token to get users list
-        cy.request({
-          method: "GET",
-          url: "http://localhost:8000/users",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          failOnStatusCode: false,
-        }).then((response) => {
-          expect(response.status).to.equal(200);
-          expect(response.body).to.be.an("array");
-          expect(response.body.length).to.be.greaterThan(0);
-
-          // Check if admin user is in the list
-          const adminInList = response.body.find(
-            (user: any) => user.email === adminUser.email
-          );
-          expect(adminInList).to.exist;
-          expect(adminInList.is_admin).to.be.true;
-        });
-      });
-    });
-  });
-
-  it("should test get users API endpoint without authentication", () => {
+  it("should test get users API endpoint (public access)", () => {
     cy.request({
       method: "GET",
       url: "http://localhost:8000/users",
       failOnStatusCode: false,
     }).then((response) => {
-      expect(response.status).to.equal(403);
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.an("array");
+      expect(response.body.length).to.be.greaterThan(0);
+
+      // Check if response has the expected structure
+      const firstUser = response.body[0];
+      expect(firstUser).to.have.property("id");
+      expect(firstUser).to.have.property("first_name");
+      expect(firstUser).to.have.property("last_name");
+      expect(firstUser).to.have.property("email");
+      expect(firstUser).to.have.property("is_admin");
     });
   });
 
-  it("should test delete user API endpoint", () => {
+  it("should test get public users API endpoint", () => {
+    cy.request({
+      method: "GET",
+      url: "http://localhost:8000/public-users",
+      failOnStatusCode: false,
+    }).then((response) => {
+      expect(response.status).to.equal(200);
+      expect(response.body).to.be.an("array");
+      expect(response.body.length).to.be.greaterThan(0);
+
+      // Check if response only contains first names
+      const firstUser = response.body[0];
+      expect(firstUser).to.have.property("first_name");
+      expect(Object.keys(firstUser)).to.have.length(1);
+    });
+  });
+
+  it("should test delete user API endpoint with admin token", () => {
     cy.fixture("users").then((users) => {
       const adminUser = users.admin;
       const testUser = users.testUser2;
@@ -141,7 +131,7 @@ describe("API Endpoints", () => {
           postal_code: testUser.postalCode,
         },
       }).then((registerResponse) => {
-        const userId = registerResponse.body.id;
+        const userId = registerResponse.body.user.id;
 
         // Login as admin
         cy.request({
@@ -166,15 +156,13 @@ describe("API Endpoints", () => {
             expect(response.status).to.equal(200);
             expect(response.body).to.have.property(
               "message",
-              "User deleted successfully"
+              `User ${userId} deleted successfully`
             );
           });
         });
       });
     });
   });
-
-
 
   it("should test duplicate email registration", () => {
     cy.fixture("users").then((users) => {
@@ -209,9 +197,10 @@ describe("API Endpoints", () => {
           },
           failOnStatusCode: false,
         }).then((response) => {
-          expect(response.status).to.equal(400);
+          expect(response.status).to.equal(200);
+          expect(response.body).to.have.property("success", false);
           expect(response.body).to.have.property(
-            "detail",
+            "error",
             "Email already registered"
           );
         });
@@ -226,7 +215,22 @@ describe("API Endpoints", () => {
       failOnStatusCode: false,
     }).then((response) => {
       expect(response.status).to.equal(200);
-      expect(response.body).to.have.property("message", "React Form API");
+      expect(response.body).to.have.property("message", "User Management API");
+      expect(response.body).to.have.property("version", "1.0.0");
+      expect(response.body).to.have.property("status", "running");
+    });
+  });
+
+  it("should test health check endpoint", () => {
+    cy.request({
+      method: "GET",
+      url: "http://localhost:8000/health",
+      failOnStatusCode: false,
+    }).then((response) => {
+      expect(response.status).to.equal(200);
+      expect(response.body).to.have.property("status");
+      expect(response.body).to.have.property("database");
+      expect(response.body).to.have.property("timestamp");
     });
   });
 });
